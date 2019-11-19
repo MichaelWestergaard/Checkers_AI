@@ -85,6 +85,7 @@ public class BoardController {
     }
 
     int[] getPostionFromString(String position){
+        System.out.println("Position"+position);
         char[] positionArray = position.toLowerCase().toCharArray();
 
         int[] result = new int[2];
@@ -119,7 +120,8 @@ public class BoardController {
                 result[0] = -1;
                 break;
         }
-        result[1] = positionArray[1];
+
+        result[1] = Character.getNumericValue(positionArray[1]) - 1;
 
         return result;
     }
@@ -134,6 +136,9 @@ public class BoardController {
         ArrayList<int[]> moves = new ArrayList<int[]>();
 
         PieceType piece = getType(x,y);
+
+        System.out.println(piece);
+        System.out.println("x" + x + " y" + y);
 
         if(piece.equals(PieceType.WHITE) || piece.equals(PieceType.CROWNED_WHITE)){
             if(getType(x+1,y+1).equals(PieceType.EMPTY)){

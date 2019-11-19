@@ -14,6 +14,10 @@ public class GameController {
     public void startGame(){
         boardController.resetBoard();
         boardController.showBoard();
+
+        gameInProgress = true;
+        currentPlayer = true;
+        playGame();
     }
 
     private void playGame(){
@@ -21,13 +25,25 @@ public class GameController {
             if(currentPlayer) { //Players turn to play
                 System.out.println("Det er din tur til at spille! Lav et træk.");
 
-                input = scan.nextLine();
-                startPosition = input.substring(0, 1);
-                endPosition = input.substring(3);
+                boolean waitForLegalMove = true;
+                while(waitForLegalMove){
 
-                boardController.move(startPosition, endPosition);
+                    input = scan.nextLine();
+                    startPosition = input.substring(0, 2);
+                    endPosition = input.substring(3);
+
+                    if(boardController.move(startPosition, endPosition) == true) {
+                        System.out.println("Træk accepteret");
+                        waitForLegalMove = false;
+                    } else {
+                        System.out.println("Ulovligt træk! Prøv igen.");
+                    }
+                }
+
+                currentPlayer = false;
             } else { //AI's turn to play
-
+                System.out.println("AI's tur!");
+                currentPlayer = true;
             }
         }
     }
