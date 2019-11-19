@@ -53,7 +53,78 @@ public class BoardController {
         System.out.println("White pieces left: " + whiteLeft + " | Black pieces left: " + blackLeft);
     }
 
-    void move(int startX, int startY, int endX, int endY){
+    boolean move(String start, String end){
+
+        int[] startPos = getPostionFromString(start),
+                endPos = getPostionFromString(end);
+
+        if(startPos.length == 2 && endPos.length == 2){
+
+            //If legalmove
+            List<int[]> moves = getLegalMoves(startPos[0], startPos[1]);
+            boolean moved = false;
+
+            for(int[] move : moves){
+                if(move[0] == endPos[0] && move[1] == endPos[1]){
+                    movePosition(startPos[0], startPos[1], endPos[0], endPos[1]);
+                    moved = true;
+                    break;
+                }
+            }
+
+            if(moved)
+                return true;
+            else
+                return false;
+
+
+        } else {
+            //Error
+            return false;
+        }
+    }
+
+    int[] getPostionFromString(String position){
+        char[] positionArray = position.toLowerCase().toCharArray();
+
+        int[] result = new int[2];
+
+        switch(positionArray[0]){
+            case 'a':
+                result[0] = 0;
+                break;
+            case 'b':
+                result[0] = 1;
+                break;
+            case 'c':
+                result[0] = 2;
+                break;
+            case 'd':
+                result[0] = 3;
+                break;
+            case 'e':
+                result[0] = 4;
+                break;
+            case 'f':
+                result[0] = 5;
+                break;
+            case 'g':
+                result[0] = 6;
+                break;
+            case 'h':
+                result[0] = 7;
+                break;
+
+            default:
+                result[0] = -1;
+                break;
+        }
+        result[1] = positionArray[1];
+
+        return result;
+    }
+
+    void movePosition(int startX, int startY, int endX, int endY){
         PieceType type = getType(startX, startY);
         board[startX][startY] = PieceType.EMPTY;
         board[endX][endY] = type;
