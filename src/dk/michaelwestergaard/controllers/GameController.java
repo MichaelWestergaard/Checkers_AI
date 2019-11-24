@@ -14,14 +14,21 @@ public class GameController {
     PieceType playerType, aiType;
     String input, startPosition, endPosition;
 
+    boolean botvsbot = false;
+
     public void startGame(){
         boardController.resetBoard();
         chooseColor();
-        playGame();
+
+        if(!botvsbot){
+            playGame();
+        } else {
+            playBotGame();
+        }
     }
 
     private void chooseColor(){
-        System.out.println("Vælg farve: Sort (1) | Hvid (2)");
+        System.out.println("Vælg farve: Sort (1) | Hvid (2) | bot VS bot (3)");
         int input;
         Scanner scanColor = new Scanner(System.in);
         boolean waitForInput = true;
@@ -41,6 +48,14 @@ public class GameController {
                     aiType = PieceType.BLACK;
                     currentPlayer = false;
                     System.out.println("Du spiller med de hvide brikker");
+                    waitForInput = false;
+                    break;
+
+                case 3:
+                    playerType = PieceType.WHITE;
+                    aiType = PieceType.BLACK;
+                    botvsbot = true;
+                    currentPlayer = false;
                     waitForInput = false;
                     break;
                 default:
@@ -79,6 +94,23 @@ public class GameController {
                 currentPlayer = false;
             } else { //AI's turn to play
                 System.out.println("AI's tur!");
+                aiController.playerToMove = aiType;
+                aiController.makeMove(boardController.board);
+                currentPlayer = true;
+            }
+        }
+    }
+
+    private void playBotGame(){
+        while(gameInProgress) {
+            boardController.showBoard();
+            if(currentPlayer) { //Players turn to play
+                System.out.println("AI1's tur!");
+                aiController.playerToMove = playerType;
+                aiController.makeMove(boardController.board);
+                currentPlayer = false;
+            } else { //AI's turn to play
+                System.out.println("AI2's tur!");
                 aiController.playerToMove = aiType;
                 aiController.makeMove(boardController.board);
                 currentPlayer = true;

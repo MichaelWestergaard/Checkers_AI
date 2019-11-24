@@ -3,6 +3,7 @@ package dk.michaelwestergaard.controllers;
 import dk.michaelwestergaard.PieceType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AIController {
@@ -11,7 +12,7 @@ public class AIController {
     private final int POINT_NORMAL_PIECE = 100;
     private final int POINT_CROWNED_PIECE = 200;
 
-    private final int MAX_SEARCH_DEPTH = 4;
+    private final int MAX_SEARCH_DEPTH = 5;
 
     public PieceType playerToMove;
     private PieceType aiType;
@@ -34,29 +35,39 @@ public class AIController {
         //System.out.println("End ("+ (bestMove[0]+bestMove[2])+","+ (bestMove[1]+bestMove[3])+")");
 
 
+        PieceType type = board[startPos[0]][startPos[1]];
+
         if(Math.abs(startPos[0]-endPos[0]) == 2){
-            int x = startPos[0]+(endPos[0]/2);
-            int y = startPos[1]+(endPos[1]/2);
-            System.out.println(x + ", " + y);
+            int x = startPos[0]+(bestMove[2]/2);
+            int y = startPos[1]+(bestMove[3]/2);
+            //System.out.println(x + ", " + y);
             board[x][y] = PieceType.EMPTY;
         }
 
-        PieceType type = board[startPos[0]][startPos[1]];
+        if(endPos[0] == 0 || endPos[0] == 7){
+            if(type.equals(PieceType.WHITE)){
+                type = PieceType.CROWNED_WHITE;
+            } else if(type.equals(PieceType.BLACK)){
+                type = PieceType.CROWNED_BLACK;
+            }
+        }
+
         board[startPos[0]][startPos[1]] = PieceType.EMPTY;
         board[endPos[0]][endPos[1]] = type;
     }
 
     private int alphaBeta(PieceType[][] board, int depth, int alpha, int beta){
-        System.out.println("Alpha = " + alpha + " Beta =  " + beta + " Depth = " + depth);
+        //System.out.println("Alpha = " + alpha + " Beta =  " + beta + " Depth = " + depth);
 
         if(boardController.getWinner(board) != null || depth == MAX_SEARCH_DEPTH){
             int evaluationVal = evaluation(board, playerToMove);
 
             System.out.println("Returning value = " + evaluationVal + " Depth: " + depth);
-            return evaluationVal;
+            return evaluationVal-depth;
         }
 
         List<int[]> legalMoves = getAllLegalMoves(board, playerToMove);
+        Collections.shuffle(legalMoves);
         if(playerToMove.equals(PieceType.BLACK)){
             int i = 0;
             while((alpha < beta) && i < legalMoves.size()){
@@ -109,6 +120,16 @@ public class AIController {
 
         PieceType type = board[startPos[0]][startPos[1]];
         board[startPos[0]][startPos[1]] = PieceType.EMPTY;
+
+        if(endPos[0] == 0 || endPos[0] == 7){
+            System.out.println("Crown piece!!!");
+            if(type.equals(PieceType.WHITE)){
+                type = PieceType.CROWNED_WHITE;
+            } else if(type.equals(PieceType.BLACK)){
+                type = PieceType.CROWNED_BLACK;
+            }
+        }
+
         board[endPos[0]][endPos[1]] = type;
 
         if(playerToMove.equals(PieceType.BLACK)){
@@ -141,10 +162,13 @@ public class AIController {
         int value = 0;
 
         //TODO: Board positions
-        System.out.println(player);
+        //System.out.println(player);
+
 
         if(player.equals(PieceType.BLACK)){
             if(PieceType.BLACK.equals(boardController.getWinner(board))){
+
+                System.out.println("Vinder! " + boardController.getWinner(board));
                 value = POINT_WIN;
             } else {
                 value = valueOfPieces(board, player);
@@ -152,6 +176,7 @@ public class AIController {
 
         } else {
             if(PieceType.WHITE.equals(boardController.getWinner(board))){
+                System.out.println("Vinder! " + boardController.getWinner(board));
                 value = POINT_WIN;
             } else {
                 value = valueOfPieces(board, player);
@@ -185,8 +210,8 @@ public class AIController {
 
         //boardController.showBoard(board);
 
-        System.out.println("Black: " + blackPoints + " white: " + whitePoints);
-        System.out.println(result);
+        //System.out.println("Black: " + blackPoints + " white: " + whitePoints);
+        //System.out.println(result);
 
         return result;
     }
