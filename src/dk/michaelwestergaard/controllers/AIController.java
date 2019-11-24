@@ -12,7 +12,7 @@ public class AIController {
     private final int POINT_NORMAL_PIECE = 100;
     private final int POINT_CROWNED_PIECE = 200;
 
-    private final int MAX_SEARCH_DEPTH = 5;
+    private final int MAX_SEARCH_DEPTH = 10;
 
     public PieceType playerToMove;
     private PieceType aiType;
@@ -68,7 +68,7 @@ public class AIController {
 
         List<int[]> legalMoves = getAllLegalMoves(board, playerToMove);
         Collections.shuffle(legalMoves);
-        if(playerToMove.equals(PieceType.BLACK)){
+        if(playerToMove.equals(PieceType.BLACK)){ //Maximizer
             int i = 0;
             while((alpha < beta) && i < legalMoves.size()){
                 PieceType[][] newBoard = makeAIMove(board, legalMoves.get(i));
@@ -81,7 +81,7 @@ public class AIController {
                 }
                 i++;
             }
-        } else {
+        } else { //Minimizer
             int i = 0;
             while((alpha < beta) && i < legalMoves.size()){
                 PieceType[][] newBoard = makeAIMove(board, legalMoves.get(i));
