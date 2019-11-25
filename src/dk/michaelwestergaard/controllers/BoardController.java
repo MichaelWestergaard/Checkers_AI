@@ -26,6 +26,45 @@ public class BoardController {
         };
     }
 
+    void testBoard1(){
+        board = new PieceType[][]{
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+        };
+    }
+
+    void testBoard2(){
+        board = new PieceType[][]{
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.BLACK, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+        };
+    }
+
+    void testBoard3(){
+        board = new PieceType[][]{
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+        };
+    }
+
     void showBoard(){
         whiteLeft = 0;
         blackLeft = 0;
@@ -351,8 +390,8 @@ public class BoardController {
     }
 
     public PieceType getWinner(PieceType[][] gameBoard){
-        whiteLeft = 0;
-        blackLeft = 0;
+        int whiteLeft = 0;
+        int blackLeft = 0;
         for (int i = 0; i < gameBoard.length; i++) {
             for (int j = 0; j < gameBoard[i].length; j++) {
                 switch (gameBoard[i][j]){
@@ -372,10 +411,13 @@ public class BoardController {
                 }
             }
         }
+
+        System.out.println("W: " + whiteLeft + " b: " + blackLeft);
+
         if(whiteLeft == 0){
-            return  PieceType.WHITE;
-        } else if(blackLeft == 0){
             return PieceType.BLACK;
+        } else if(blackLeft == 0){
+            return PieceType.WHITE;
         } else {
             return null;
         }
@@ -410,9 +452,9 @@ public class BoardController {
 
     public PieceType getWinner(){
         if(whiteLeft == 0){
-            return  PieceType.WHITE;
+            return  PieceType.BLACK;
         } else if(blackLeft == 0){
-            return PieceType.BLACK;
+            return PieceType.WHITE;
         } else {
             return null;
         }

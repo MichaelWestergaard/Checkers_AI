@@ -71,8 +71,15 @@ public class GameController {
     }
 
     private void playGame(){
+        //boardController.testBoard3();
         while(gameInProgress) {
             boardController.showBoard();
+
+            if(boardController.getWinner() != null){
+                System.out.println(boardController.getWinner() + " Vandt!");
+                gameInProgress = false;
+                break;
+            }
             if(currentPlayer) { //Players turn to play
                 System.out.println("Det er din tur til at spille! Lav et træk.");
 
@@ -93,6 +100,7 @@ public class GameController {
 
                 currentPlayer = false;
             } else { //AI's turn to play
+                System.out.println(gameInProgress);
                 System.out.println("AI's tur!");
                 aiController.playerToMove = aiType;
                 aiController.makeMove(boardController.board);
