@@ -68,33 +68,34 @@ public class BoardController {
     void showBoard(){
         whiteLeft = 0;
         blackLeft = 0;
-        System.out.println(" |A|B|C|D|E|F|G|H|");
+        System.out.println(" | A | B | C | D | E | F | G | H |");
+        System.out.println("------------------------------------");
         for (int i = 0; i < board.length; i++) {
             System.out.print(i+1);
             for (int j = 0; j < board[i].length; j++) {
                 System.out.print("|");
                 switch (board[i][j]){
                     case EMPTY:
-                        System.out.print(" ");
+                        System.out.print("   ");
                         break;
                     case WHITE:
-                        System.out.print("W");
+                        System.out.print(" W ");
                         whiteLeft++;
                         break;
                     case CROWNED_WHITE:
-                        System.out.print("V");
+                        System.out.print(" W*");
                         whiteLeft++;
                         break;
                     case BLACK:
-                        System.out.print("B");
+                        System.out.print(" B ");
                         blackLeft++;
                         break;
                     case CROWNED_BLACK:
-                        System.out.print("P");
+                        System.out.print(" B*");
                         blackLeft++;
                         break;
                     default:
-                        System.out.print("C");
+                        System.out.print(" _ ");
                         break;
                 }
             }
@@ -412,7 +413,7 @@ public class BoardController {
             }
         }
 
-        System.out.println("W: " + whiteLeft + " b: " + blackLeft);
+        //System.out.println("W: " + whiteLeft + " b: " + blackLeft);
 
         if(whiteLeft == 0){
             return PieceType.BLACK;

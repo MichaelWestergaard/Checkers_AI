@@ -60,7 +60,6 @@ public class AIController {
     }
 
     private int alphaBeta(PieceType[][] board, int depth, int alpha, int beta) {
-        //System.out.println("Alpha = " + alpha + " Beta =  " + beta + " Depth = " + depth);
 
         if (boardController.getWinner(board) != null || depth == MAX_SEARCH_DEPTH) {
             int evaluationVal = evaluation(board, playerToMove);
@@ -76,6 +75,9 @@ public class AIController {
                 return evaluationVal - depth;
 
         }
+
+
+        System.out.println("Alpha = " + alpha + " Beta =  " + beta + " Depth = " + depth);
 
         List<int[]> legalMoves = getAllLegalMoves(board, playerToMove);
         //Collections.shuffle(legalMoves);
@@ -109,7 +111,6 @@ public class AIController {
 
                 int value = alphaBeta(newBoard, depth + 1, alpha, beta);
 
-                value = -1* value;
 /*
                 System.out.println("Minimizer");
                 System.out.println("Value = " +value);
@@ -118,7 +119,7 @@ public class AIController {
                 if (value < beta) {
                     beta = value;
 
-                    bestMove = legalMoves.get(i);
+                    //bestMove = legalMoves.get(i);
                     /*
                     System.out.println("Changing beta");
                     System.out.println("new best move");
@@ -208,7 +209,7 @@ public class AIController {
 
         if (winner != null) {
             System.out.println("Winner found");
-            System.out.println(" Winner is " + winner);
+            System.out.println("    Winner is " + winner);
 
             if (winner.equals(player)) {
                 value += POINT_WIN;
@@ -246,8 +247,8 @@ public class AIController {
 
         //boardController.showBoard(board);
 
-        //System.out.println("Black: " + blackPoints + " white: " + whitePoints);
-        //System.out.println(result);
+        System.out.println("Black: " + blackPoints + " white: " + whitePoints);
+        System.out.println(result);
 
         return result;
     }
