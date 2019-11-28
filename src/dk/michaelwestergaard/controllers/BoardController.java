@@ -204,14 +204,17 @@ public class BoardController {
 
         PieceType piece = getType(x,y);
 
+        //System.out.println(piece);
 
-        //TODO: crowned movements
         if(piece.equals(PieceType.WHITE) || piece.equals(PieceType.CROWNED_WHITE)){
             //Attack moves
             if(canPieceAttack(piece, new int[]{x,y}, new int[]{x+1,y-1}, new int[]{x+2,y-2})){
                 //System.out.println("can attack " + (x+1) + ", " + (y-1));
                 if(AI){
                     moves.add(new int[]{x, y, 2, -2});
+                    List<int[]> temp = new ArrayList<int[]>();
+                    temp.add(new int[]{x, y, 2, -2});
+                    return temp;
                 } else {
                     moves.add(new int[]{2,-2});
                 }
@@ -220,6 +223,10 @@ public class BoardController {
                 //System.out.println("can attack " + (x+1) + ", " + (y+1));
                 if(AI){
                     moves.add(new int[]{x, y, 2, 2});
+
+                    List<int[]> temp = new ArrayList<int[]>();
+                    temp.add(new int[]{x, y, 2, 2});
+                    return temp;
                 } else {
                     moves.add(new int[]{2,2});
                 }
@@ -248,6 +255,10 @@ public class BoardController {
                     //System.out.println("can attack " + (x-1) + ", " + (y-1));
                     if(AI){
                         moves.add(new int[]{x, y, -2, -2});
+
+                        List<int[]> temp = new ArrayList<int[]>();
+                        temp.add(new int[]{x, y, -2, -2});
+                        return temp;
                     } else{
                         moves.add(new int[]{-2,-2});
                     }
@@ -256,6 +267,9 @@ public class BoardController {
                     //System.out.println("can attack " + (x-1) + ", " + (y+1));
                     if(AI){
                         moves.add(new int[]{x, y, -2, 2});
+                        List<int[]> temp = new ArrayList<int[]>();
+                        temp.add(new int[]{x, y, -2, 2});
+                        return temp;
                     } else{
                         moves.add(new int[]{-2,2});
                     }
@@ -285,6 +299,10 @@ public class BoardController {
                 //System.out.println("can attack " + (x-1) + ", " + (y-1));
                 if(AI){
                     moves.add(new int[]{x, y, -2, -2});
+
+                    List<int[]> temp = new ArrayList<int[]>();
+                    temp.add(new int[]{x, y, -2, -2});
+                    return temp;
                 } else{
                     moves.add(new int[]{-2,-2});
                 }
@@ -294,6 +312,10 @@ public class BoardController {
                 //System.out.println("can attack " + (x-1) + ", " + (y+1));
                 if(AI){
                     moves.add(new int[]{x, y, -2, 2});
+
+                    List<int[]> temp = new ArrayList<int[]>();
+                    temp.add(new int[]{x, y, -2, 2});
+                    return temp;
                 } else{
                     moves.add(new int[]{-2,2});
                 }
@@ -321,6 +343,10 @@ public class BoardController {
                     //System.out.println("can attack " + (x+1) + ", " + (y-1));
                     if(AI){
                         moves.add(new int[]{x, y, 2, -2});
+
+                        List<int[]> temp = new ArrayList<int[]>();
+                        temp.add(new int[]{x, y, 2, -2});
+                        return temp;
                     } else {
                         moves.add(new int[]{2,-2});
                     }
@@ -330,6 +356,10 @@ public class BoardController {
                     //System.out.println("can attack " + (x+1) + ", " + (y+1));
                     if(AI){
                         moves.add(new int[]{x, y, 2, 2});
+
+                        List<int[]> temp = new ArrayList<int[]>();
+                        temp.add(new int[]{x, y, 2, 2});
+                        return temp;
                     } else {
                         moves.add(new int[]{2,2});
                     }

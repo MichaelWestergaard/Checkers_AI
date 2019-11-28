@@ -30,6 +30,7 @@ public class AIController {
 
         int maxValue;
         int bestIndex = 0;
+        boolean hasAttackMove = false;
 
         //Loop bestMoves and find the best score
         if(aiType.equals(PieceType.BLACK)){ //Maximizer
@@ -38,10 +39,28 @@ public class AIController {
             for (int i = 0; i < bestMoves.size(); i++) {
                 Move currentMove = bestMoves.get(i);
                 System.out.println("Index: " + i +  " Move: "+ currentMove);
-                if(maxValue < currentMove.getScore()){
-                    maxValue = currentMove.getScore();
-                    bestIndex = i;
+
+                if(Math.abs(currentMove.getMove()[2]) == 2) {
+                    System.out.println("CAN ATTACK!! DO IT ");
+                    if(hasAttackMove){
+                        if(maxValue < currentMove.getScore()){
+                            maxValue = currentMove.getScore();
+                            bestIndex = i;
+                        }
+                    } else {
+                        hasAttackMove = true;
+                        maxValue = currentMove.getScore();
+                        bestIndex = i;
+                    }
+                } else { //Normal move
+                    if(!hasAttackMove) {
+                        if (maxValue < currentMove.getScore()) {
+                            maxValue = currentMove.getScore();
+                            bestIndex = i;
+                        }
+                    }
                 }
+
             }
 
         } else { //Minimizer
@@ -50,10 +69,28 @@ public class AIController {
             for (int i = 0; i < bestMoves.size(); i++) {
                 Move currentMove = bestMoves.get(i);
                 System.out.println("Index: " + i +  " Move: "+ currentMove);
-                if(maxValue > currentMove.getScore()){
-                    maxValue = currentMove.getScore();
-                    bestIndex = i;
+
+                if(Math.abs(currentMove.getMove()[2]) == 2) {
+                    System.out.println("CAN ATTACK!! DO IT ");
+                    if(hasAttackMove){
+                        if(maxValue > currentMove.getScore()){
+                            maxValue = currentMove.getScore();
+                            bestIndex = i;
+                        }
+                    } else {
+                        hasAttackMove = true;
+                        maxValue = currentMove.getScore();
+                        bestIndex = i;
+                    }
+                } else { //Normal move
+                    if(!hasAttackMove) {
+                        if (maxValue > currentMove.getScore()) {
+                            maxValue = currentMove.getScore();
+                            bestIndex = i;
+                        }
+                    }
                 }
+
             }
 
         }
@@ -71,6 +108,7 @@ public class AIController {
 
             PieceType type = boardController.board[startPos[0]][startPos[1]];
 
+            //attack move
             if (Math.abs(startPos[0] - endPos[0]) == 2) {
                 int x = startPos[0] + (move[2] / 2);
                 int y = startPos[1] + (move[3] / 2);
@@ -87,6 +125,7 @@ public class AIController {
 
             boardController.board[startPos[0]][startPos[1]] = PieceType.EMPTY;
             boardController.board[endPos[0]][endPos[1]] = type;
+
         }
     }
 
@@ -127,11 +166,13 @@ public class AIController {
                 PieceType[][] newBoard = makeAIMove(board, legalMoves.get(i));
 
                 int currentValue = alphaBeta(newBoard, depth+1, playerType, alpha, beta);
+                System.out.println("CurrentValue " + currentValue + " Depth: " + depth);
 
                 //Find max value
                 bestValue = Math.max(bestValue, currentValue);
 
-                alpha = (alpha >= bestValue) ? alpha : bestValue;
+                //alpha = (alpha >= bestValue) ? alpha : bestValue;
+                alpha = Integer.max(alpha, currentValue);
 
                 if(alpha >= beta) {
                     break;
@@ -144,7 +185,7 @@ public class AIController {
             }
             return bestValue;
         } else { //Minimizer
-            int bestValue = Integer.MIN_VALUE;
+            int bestValue = Integer.MAX_VALUE;
 
             List<int[]> legalMoves = getAllLegalMoves(board, player);
             for (int i = 0; i < legalMoves.size(); i++) {
@@ -155,9 +196,10 @@ public class AIController {
                 int currentValue = alphaBeta(newBoard, depth+1, aiType, alpha, beta);
 
                 //Find min value
-                bestValue = Math.min(bestValue, currentValue);
+                bestValue = Integer.min(bestValue, currentValue);
 
-                beta = (beta <= currentValue) ? beta : currentValue;
+                //beta = (beta <= currentValue) ? beta : currentValue;
+                beta = Integer.min(beta, currentValue);
 
                 if(alpha >= beta) {
                     break;
@@ -197,24 +239,27 @@ public class AIController {
 
         //300 points for pieces that have been killed
         if(aiType.equals(PieceType.BLACK)){
-            score += Math.abs((whiteNormal+whiteCrowned)-12)*300;
-            score -= Math.abs((blackNormal+blackCrowned)-12)*300;
-        } else {
-            score += Math.abs((blackNormal+blackCrowned)-12)*300;
             score -= Math.abs((whiteNormal+whiteCrowned)-12)*300;
+            score += Math.abs((blackNormal+blackCrowned)-12)*300;
+        } else {
+            score -= Math.abs((blackNormal+blackCrowned)-12)*300;
+            score += Math.abs((whiteNormal+whiteCrowned)-12)*300;
         }
 
         //500 point for crowned pieces
         if(aiType.equals(PieceType.BLACK)){
-            score += blackCrowned*500;
-            score -= whiteCrowned*500;
-        } else {
-            score += whiteCrowned*500;
             score -= blackCrowned*500;
+            score += whiteCrowned*500;
+        } else {
+            score -= whiteCrowned*500;
+            score += blackCrowned*500;
         }
 
-
         //300 point for pieces that can be attacked next turn
+
+
+        //Get higher points the closer the pieces is to getting upgraded to crowned (only if there is nothing to do)
+        //
 
 
         return score;
