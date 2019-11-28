@@ -1,49 +1,80 @@
 package dk.michaelwestergaard.controllers;
 
+import dk.michaelwestergaard.Move;
 import dk.michaelwestergaard.PieceType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class AIController {
 
-    private final int POINT_WIN = 1000000; //biggest number
-    private final int POINT_NORMAL_PIECE = 100;
-    private final int POINT_CROWNED_PIECE = 1000;
-
-    private final int MAX_SEARCH_DEPTH = 3;
-
-    public PieceType playerToMove;
     private PieceType aiType;
+    private PieceType playerType;
+
     private BoardController boardController;
 
-    int[] bestMove;
+    private List<Move> bestMoves;
 
-    public AIController(PieceType aiType, BoardController boardController) {
+    private final int MAX_SEARCH_DEPTH = 6;
+
+    public AIController(PieceType aiType, PieceType playerType, BoardController boardController) {
         this.aiType = aiType;
+        this.playerType = playerType;
         this.boardController = boardController;
     }
 
-    public void makeMove(PieceType[][] board) {
-        bestMove = null;
-        alphaBeta(board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    public void bestMove(PieceType[][] board) {
+        bestMoves = new ArrayList<Move>();
 
-        if (bestMove != null) {
-            System.out.println("bestMove final");
-            System.out.println("Start (" + bestMove[0] + "," + bestMove[1] + ") bestMove (" + bestMove[2] + "," + bestMove[3] + ")");
-            int[] startPos = {bestMove[0], bestMove[1]};
-            int[] endPos = {(bestMove[0] + bestMove[2]), (bestMove[1] + bestMove[3])};
-            //System.out.println("End ("+ (bestMove[0]+bestMove[2])+","+ (bestMove[1]+bestMove[3])+")");
+        alphaBeta(board, 0, aiType, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
+        int maxValue;
+        int bestIndex = 0;
 
-            PieceType type = board[startPos[0]][startPos[1]];
+        //Loop bestMoves and find the best score
+        if(aiType.equals(PieceType.BLACK)){ //Maximizer
+            maxValue = Integer.MIN_VALUE;
+
+            for (int i = 0; i < bestMoves.size(); i++) {
+                Move currentMove = bestMoves.get(i);
+                System.out.println("Index: " + i +  " Move: "+ currentMove);
+                if(maxValue < currentMove.getScore()){
+                    maxValue = currentMove.getScore();
+                    bestIndex = i;
+                }
+            }
+
+        } else { //Minimizer
+            maxValue = Integer.MAX_VALUE;
+
+            for (int i = 0; i < bestMoves.size(); i++) {
+                Move currentMove = bestMoves.get(i);
+                System.out.println("Index: " + i +  " Move: "+ currentMove);
+                if(maxValue > currentMove.getScore()){
+                    maxValue = currentMove.getScore();
+                    bestIndex = i;
+                }
+            }
+
+        }
+
+        //We found the best move
+        Move bestMove = bestMoves.get(bestIndex);
+        System.out.println("Best index: "+ bestIndex + " Best Move: " +bestMove);
+        move(bestMove.getMove());
+    }
+
+    private void move(int[] move){
+        if (move != null) {
+            int[] startPos = {move[0], move[1]};
+            int[] endPos = {(move[0] + move[2]), (move[1] + move[3])};
+
+            PieceType type = boardController.board[startPos[0]][startPos[1]];
 
             if (Math.abs(startPos[0] - endPos[0]) == 2) {
-                int x = startPos[0] + (bestMove[2] / 2);
-                int y = startPos[1] + (bestMove[3] / 2);
-                //System.out.println(x + ", " + y);
-                board[x][y] = PieceType.EMPTY;
+                int x = startPos[0] + (move[2] / 2);
+                int y = startPos[1] + (move[3] / 2);
+                boardController.board[x][y] = PieceType.EMPTY;
             }
 
             if (endPos[0] == 0 || endPos[0] == 7) {
@@ -54,83 +85,162 @@ public class AIController {
                 }
             }
 
-            board[startPos[0]][startPos[1]] = PieceType.EMPTY;
-            board[endPos[0]][endPos[1]] = type;
+            boardController.board[startPos[0]][startPos[1]] = PieceType.EMPTY;
+            boardController.board[endPos[0]][endPos[1]] = type;
         }
     }
 
-    private int alphaBeta(PieceType[][] board, int depth, int alpha, int beta) {
+    private int alphaBeta(PieceType[][] board, int depth, PieceType player, int alpha, int beta){
 
-        if (boardController.getWinner(board) != null || depth == MAX_SEARCH_DEPTH) {
-            int evaluationVal = evaluation(board, playerToMove);
+        //If max depth or game is ended return evaluation of the current board
+        if(depth == MAX_SEARCH_DEPTH || boardController.getWinner(board) != null){
+            if(boardController.getWinner(board) != null){
+                if(boardController.getWinner(board).equals(PieceType.BLACK)){
+                    if(aiType.equals(PieceType.BLACK)){
+                        return 10000;
+                    } else {
+                        return -10000;
+                    }
+                } else if(boardController.getWinner(board).equals(PieceType.WHITE)) {
+                    if(aiType.equals(PieceType.WHITE)){
+                        return 10000;
+                    } else {
+                        return -10000;
+                    }
+                }
+            }
 
+            System.out.println("Returning value: " + staticEvaluation(board));
 
-/*
-            System.out.println("Returning value = " + evaluationVal + " Depth: " + depth);
-            System.out.println(aiType);
-            System.out.println(playerToMove);
-
- */
-
-                return evaluationVal - depth;
-
+            //No winner yet, evaluate the board instead
+            return staticEvaluation(board);
         }
 
+        //https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning#Pseudocode - alphabeta pseudocode
+        if(player.equals(aiType)){ //Maximizer
+            int bestValue = Integer.MIN_VALUE;
 
-        System.out.println("Alpha = " + alpha + " Beta =  " + beta + " Depth = " + depth);
+            List<int[]> legalMoves = getAllLegalMoves(board, player);
+            for (int i = 0; i < legalMoves.size(); i++) {
 
-        List<int[]> legalMoves = getAllLegalMoves(board, playerToMove);
-        //Collections.shuffle(legalMoves);
-        if (playerToMove.equals(aiType)) { //Maximizer
-            int i = 0;
-            while ((alpha < beta) && i < legalMoves.size()) {
+                //Make move
                 PieceType[][] newBoard = makeAIMove(board, legalMoves.get(i));
 
-                int value = alphaBeta(newBoard, depth + 1, alpha, beta);
-                /*
-                System.out.println("Maximizer");
-                System.out.println("Value = " +value);
-                boardController.showBoard(newBoard);
-                 */
+                int currentValue = alphaBeta(newBoard, depth+1, playerType, alpha, beta);
 
-                if (value > alpha) {
-                    alpha = value;
-                    bestMove = legalMoves.get(i);
-                    /*
-                    System.out.println("Changing alpha");
-                    System.out.println("new best move");
-                    System.out.println("Start ("+ bestMove[0] + ","+bestMove[1]+ ") bestMove ("+bestMove[2]+","+bestMove[3]+")");
-                    */
+                //Find max value
+                bestValue = Math.max(bestValue, currentValue);
+
+                alpha = (alpha >= bestValue) ? alpha : bestValue;
+
+                if(alpha >= beta) {
+                    break;
                 }
-                i++;
+
+                //If depth 0 add move and score to bestmoves list for later use
+                if(depth == 0){
+                    bestMoves.add(new Move(legalMoves.get(i), currentValue));
+                }
             }
+            return bestValue;
         } else { //Minimizer
-            int i = 0;
-            while ((alpha < beta) && i < legalMoves.size()) {
+            int bestValue = Integer.MIN_VALUE;
+
+            List<int[]> legalMoves = getAllLegalMoves(board, player);
+            for (int i = 0; i < legalMoves.size(); i++) {
+
+                //Make move
                 PieceType[][] newBoard = makeAIMove(board, legalMoves.get(i));
 
-                int value = alphaBeta(newBoard, depth + 1, alpha, beta);
+                int currentValue = alphaBeta(newBoard, depth+1, aiType, alpha, beta);
 
-/*
-                System.out.println("Minimizer");
-                System.out.println("Value = " +value);
-                boardController.showBoard(newBoard);
-*/
-                if (value < beta) {
-                    beta = value;
+                //Find min value
+                bestValue = Math.min(bestValue, currentValue);
 
-                    //bestMove = legalMoves.get(i);
-                    /*
-                    System.out.println("Changing beta");
-                    System.out.println("new best move");
-                    System.out.println("Start ("+ bestMove[0] + ","+bestMove[1]+ ") bestMove ("+bestMove[2]+","+bestMove[3]+")");
-                    */
+                beta = (beta <= currentValue) ? beta : currentValue;
+
+                if(alpha >= beta) {
+                    break;
                 }
-                i++;
+
+                if(depth == 0){
+                    bestMoves.add(new Move(legalMoves.get(i), currentValue));
+                }
+            }
+
+            return bestValue;
+        }
+    }
+
+    private int staticEvaluation(PieceType[][] board){
+        int score = 0;
+
+        int blackNormal = 0, blackCrowned = 0, whiteNormal = 0, whiteCrowned = 0;
+
+        //Get amount of pieces on the board
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                PieceType piece = board[i][j];
+
+                if (piece.equals(PieceType.BLACK)) {
+                    blackNormal++;
+                } else if (piece.equals(PieceType.CROWNED_BLACK)) {
+                    blackCrowned++;
+                } else if (piece.equals(PieceType.WHITE)) {
+                    whiteNormal++;
+                } else if (piece.equals(PieceType.CROWNED_WHITE)) {
+                    whiteCrowned++;
+                }
+
             }
         }
 
-        return 0;
+        //300 points for pieces that have been killed
+        if(aiType.equals(PieceType.BLACK)){
+            score += Math.abs((whiteNormal+whiteCrowned)-12)*300;
+            score -= Math.abs((blackNormal+blackCrowned)-12)*300;
+        } else {
+            score += Math.abs((blackNormal+blackCrowned)-12)*300;
+            score -= Math.abs((whiteNormal+whiteCrowned)-12)*300;
+        }
+
+        //500 point for crowned pieces
+        if(aiType.equals(PieceType.BLACK)){
+            score += blackCrowned*500;
+            score -= whiteCrowned*500;
+        } else {
+            score += whiteCrowned*500;
+            score -= blackCrowned*500;
+        }
+
+
+        //300 point for pieces that can be attacked next turn
+
+
+        return score;
+    }
+
+    private List<int[]> getAllLegalMoves(PieceType[][] board, PieceType type) {
+        List<int[]> moves = new ArrayList<int[]>();
+        List<PieceType> types = new ArrayList<PieceType>();
+        if (type.equals(PieceType.BLACK)) {
+            types.add(PieceType.CROWNED_BLACK);
+            types.add(PieceType.BLACK);
+        } else {
+            types.add(PieceType.WHITE);
+            types.add(PieceType.CROWNED_WHITE);
+        }
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (types.contains(board[i][j])) {
+                    List<int[]> aiMoves = boardController.getLegalMoves(i, j, true);
+                    if (aiMoves.size() > 0)
+                        moves.addAll(aiMoves);
+                }
+            }
+        }
+        return moves;
     }
 
     PieceType[][] makeAIMove(PieceType[][] oldBoard, int[] move) {
@@ -141,10 +251,8 @@ public class AIController {
                 board[i][j] = oldBoard[i][j];
             }
         }
-        //System.out.println("Start ("+ move[0] + ","+move[1]+ ") move ("+move[2]+","+move[3]+")");
         int[] startPos = {move[0], move[1]};
         int[] endPos = {(move[0] + move[2]), (move[1] + move[3])};
-        //System.out.println("End ("+ (move[0]+move[2])+","+ (move[1]+move[3])+")");
 
         if (Math.abs(startPos[0] - endPos[0]) == 2) {
             int x = startPos[0] + (move[2] / 2);
@@ -156,7 +264,6 @@ public class AIController {
         board[startPos[0]][startPos[1]] = PieceType.EMPTY;
 
         if (endPos[0] == 0 || endPos[0] == 7) {
-            //System.out.println("Crown piece!!!");
             if (type.equals(PieceType.WHITE)) {
                 type = PieceType.CROWNED_WHITE;
             } else if (type.equals(PieceType.BLACK)) {
@@ -166,92 +273,6 @@ public class AIController {
 
         board[endPos[0]][endPos[1]] = type;
 
-        if (playerToMove.equals(PieceType.BLACK)) {
-            playerToMove = PieceType.WHITE;
-        } else {
-            playerToMove = PieceType.BLACK;
-        }
-
         return board;
     }
-
-    private List<int[]> getAllLegalMoves(PieceType[][] board, PieceType type) {
-        List<int[]> moves = new ArrayList<int[]>();
-
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (type.equals(board[i][j])) {
-                    List<int[]> aiMoves = boardController.getLegalMoves(i, j, true);
-                    if (aiMoves.size() > 0)
-                        moves.addAll(aiMoves);
-                }
-            }
-        }
-
-        /*
-        System.out.println(type);
-        for(int[] move : moves){
-            System.out.println("("+move[0] + ", " + move[1] +")");
-        }
-        */
-
-        return moves;
-    }
-
-
-    public int evaluation(PieceType[][] board, PieceType player) {
-        int value = 0;
-
-        //TODO: Board positions
-        //System.out.println(player);
-
-        PieceType winner = boardController.getWinner(board);
-
-        if (winner != null) {
-            System.out.println("Winner found");
-            System.out.println("    Winner is " + winner);
-
-            if (winner.equals(player)) {
-                value += POINT_WIN;
-            } else {
-                value -= POINT_WIN;
-            }
-        } else {
-            value += valueOfPieces(board, player);
-        }
-
-        return value;
-    }
-
-    private int valueOfPieces(PieceType[][] board, PieceType player) {
-        int whitePoints = 0, blackPoints = 0, result = 0;
-
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                PieceType piece = board[i][j];
-
-                if (piece.equals(PieceType.BLACK)) {
-                    blackPoints += POINT_NORMAL_PIECE;
-                } else if (piece.equals(PieceType.CROWNED_BLACK)) {
-                    blackPoints += POINT_CROWNED_PIECE;
-                } else if (piece.equals(PieceType.WHITE)) {
-                    whitePoints += POINT_NORMAL_PIECE;
-                } else if (piece.equals(PieceType.CROWNED_WHITE)) {
-                    whitePoints += POINT_CROWNED_PIECE;
-                }
-
-            }
-        }
-
-        result = (player.equals(PieceType.BLACK)) ? blackPoints - whitePoints : whitePoints - blackPoints;
-
-        //boardController.showBoard(board);
-
-        System.out.println("Black: " + blackPoints + " white: " + whitePoints);
-        System.out.println(result);
-
-        return result;
-    }
-
-
 }
