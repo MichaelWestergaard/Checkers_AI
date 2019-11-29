@@ -23,14 +23,14 @@ public class AIController {
         this.boardController = boardController;
     }
 
-    public void bestMove(PieceType[][] board) {
+    public void bestMove(PieceType[][] board, boolean hasJustAttacked) {
         bestMoves = new ArrayList<Move>();
 
         alphaBeta(board, 0, aiType, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
         int maxValue;
-        int bestIndex = 0;
-        boolean hasAttackMove = false;
+        int bestIndex = Integer.MIN_VALUE;
+        boolean hasAttackMove = hasJustAttacked;
 
         //Loop bestMoves and find the best score
         if(aiType.equals(PieceType.BLACK)){ //Maximizer
@@ -96,9 +96,17 @@ public class AIController {
         }
 
         //We found the best move
-        Move bestMove = bestMoves.get(bestIndex);
-        System.out.println("Best index: "+ bestIndex + " Best Move: " +bestMove);
-        move(bestMove.getMove());
+        if(bestIndex != Integer.MIN_VALUE) {
+            Move bestMove = bestMoves.get(bestIndex);
+            System.out.println("Best index: " + bestIndex + " Best Move: " + bestMove);
+            move(bestMove.getMove());
+        } else {
+            hasAttackMove = false;
+        }
+
+        if(hasAttackMove) {
+            bestMove(boardController.board, true);
+        }
     }
 
     private void move(int[] move){
@@ -239,11 +247,11 @@ public class AIController {
 
         //300 points for pieces that have been killed
         if(aiType.equals(PieceType.BLACK)){
-            score -= Math.abs((whiteNormal+whiteCrowned)-12)*300;
-            score += Math.abs((blackNormal+blackCrowned)-12)*300;
-        } else {
-            score -= Math.abs((blackNormal+blackCrowned)-12)*300;
             score += Math.abs((whiteNormal+whiteCrowned)-12)*300;
+            score -= Math.abs((blackNormal+blackCrowned)-12)*300;
+        } else {
+            score += Math.abs((blackNormal+blackCrowned)-12)*300;
+            score -= Math.abs((whiteNormal+whiteCrowned)-12)*300;
         }
 
         //500 point for crowned pieces

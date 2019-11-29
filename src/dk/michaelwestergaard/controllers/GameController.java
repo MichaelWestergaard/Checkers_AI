@@ -90,7 +90,7 @@ public class GameController {
             } else { //AI's turn to play
                 System.out.println(gameInProgress);
                 System.out.println("AI's tur!");
-                aiController.bestMove(boardController.board);
+                aiController.bestMove(boardController.board, false);
                 currentPlayer = true;
             }
         }
