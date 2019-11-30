@@ -60,7 +60,7 @@ public class GameController {
     }
 
     private void playGame(){
-        //boardController.testBoard3();
+        boardController.testBoard3();
         while(gameInProgress) {
             boardController.showBoard();
 
@@ -84,43 +84,7 @@ public class GameController {
 
                     if(boardController.move(startPos, endPos) == true) {
                         System.out.println("Træk accepteret");
-
-                        do {
-                            if(Math.abs(startPos[1]-endPos[1]) == 2) {
-                                List<int[]> moves = boardController.getLegalMoves(endPos[0], endPos[1], false);
-
-                                for (int[] move : moves) {
-                                    if(Math.abs(move[0]) != 2 || Math.abs(move[1]) != 2) {
-                                        moves.remove(move);
-                                    }
-                                }
-
-                                if(!moves.isEmpty()) {
-                                    waitForLegalMove = true;
-
-                                    System.out.println("Du kan lave et dobbelttræk! Indtast dit slutkoordinat.");
-                                    startPos = endPos;
-                                    endPos = boardController.getPostionFromString(scan.nextLine());
-
-                                    for (int[] move : moves) {
-                                        if((startPos[0]+move[0]) == endPos[0] && (startPos[1]+move[1]) == endPos[1]) {
-                                            if(boardController.move(startPos, endPos) == true) {
-                                                System.out.println("Træk accepteret");
-                                            } else {
-                                                System.out.println("Ulovligt træk! Prøv igen.");
-                                            }
-                                            break;
-                                        } else {
-                                            System.out.println("Ulovligt træk! Prøv igen.");
-                                        }
-                                    }
-                                } else {
-                                    waitForLegalMove = false;
-                                }
-                            } else {
-                                waitForLegalMove = false;
-                            }
-                        } while (waitForLegalMove);
+                        waitForLegalMove = false;
                     } else {
                         System.out.println("Ulovligt træk! Prøv igen.");
                     }

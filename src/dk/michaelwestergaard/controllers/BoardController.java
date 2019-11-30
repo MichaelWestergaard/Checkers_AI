@@ -54,14 +54,14 @@ public class BoardController {
 
     void testBoard3(){
         board = new PieceType[][]{
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY},
                 {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
                 {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
                 {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
-                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
-                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
-                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
-                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
-                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.BLACK},
         };
     }
 
@@ -144,6 +144,11 @@ public class BoardController {
                 }
             }
 
+            if(attacked){
+                System.out.println("attacked");
+                multipleMove(endPos[0], endPos[1]);
+            }
+
             if(moved)
                 return true;
             else
@@ -153,6 +158,34 @@ public class BoardController {
         } else {
             //Error
             return false;
+        }
+    }
+
+    private void multipleMove(int startX, int startY){
+        List<int[]> moves = getLegalMoves(startX, startY, false);
+        boolean attacked = false;
+
+        int[] endPos = new int[2];
+        System.out.println("start " + startX + ", " + startY);
+
+
+        for(int[] move : moves){
+            System.out.println("move loop: " + move[0] + ", " + move[1]);
+            if(Math.abs(move[0]) == 2){
+                int x = startX+(move[0]/2);
+                int y = startY+(move[1]/2);
+                board[x][y] = PieceType.EMPTY;
+                attacked = true;
+                endPos[0] = startX+move[0];
+                endPos[1] = startY+move[1];
+
+                movePosition(startX, startY, endPos[0], endPos[1]);
+                break;
+            }
+        }
+
+        if(attacked){
+            multipleMove(endPos[0], endPos[1]);
         }
     }
 

@@ -30,7 +30,7 @@ public class AIController {
 
         int maxValue;
         int bestIndex = Integer.MIN_VALUE;
-        boolean hasAttackMove = hasJustAttacked;
+        boolean hasAttackMove = false;
 
         //Loop bestMoves and find the best score
         if(aiType.equals(PieceType.BLACK)){ //Maximizer
@@ -53,7 +53,7 @@ public class AIController {
                         bestIndex = i;
                     }
                 } else { //Normal move
-                    if(!hasAttackMove) {
+                    if(!hasAttackMove && !hasJustAttacked) {
                         if (maxValue < currentMove.getScore()) {
                             maxValue = currentMove.getScore();
                             bestIndex = i;
