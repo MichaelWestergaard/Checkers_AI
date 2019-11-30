@@ -117,16 +117,16 @@ public class BoardController {
         System.out.println("White pieces left: " + whiteLeft + " | Black pieces left: " + blackLeft);
     }
 
-    boolean move(String start, String end){
+    boolean move(int[] start, int[] end){
 
-        int[] startPos = getPostionFromString(start),
-                endPos = getPostionFromString(end);
+        int[] startPos = start,
+                endPos = end;
 
         if(startPos.length == 2 && endPos.length == 2){
 
             //If legalmove
             List<int[]> moves = getLegalMoves(startPos[0], startPos[1], false);
-            boolean moved = false;
+            boolean moved = false, attacked = false;
 
             for(int[] move : moves){
                 if((startPos[0]+move[0]) == endPos[0] && (startPos[1]+move[1]) == endPos[1]){
@@ -136,6 +136,7 @@ public class BoardController {
                         int y = startPos[1]+(move[1]/2);
                         System.out.println("Jumped over: X " + x + " y " + y);
                         board[x][y] = PieceType.EMPTY;
+                        attacked = true;
                     }
                     movePosition(startPos[0], startPos[1], endPos[0], endPos[1]);
                     moved = true;

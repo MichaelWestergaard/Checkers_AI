@@ -2,6 +2,7 @@ package dk.michaelwestergaard.controllers;
 
 import dk.michaelwestergaard.PieceType;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class GameController {
@@ -78,9 +79,48 @@ public class GameController {
                     startPosition = input.substring(0, 2);
                     endPosition = input.substring(3);
 
-                    if(boardController.move(startPosition, endPosition) == true) {
+                    int[] startPos = boardController.getPostionFromString(startPosition),
+                            endPos = boardController.getPostionFromString(endPosition);
+
+                    if(boardController.move(startPos, endPos) == true) {
                         System.out.println("Træk accepteret");
-                        waitForLegalMove = false;
+
+                        do {
+                            if(Math.abs(startPos[1]-endPos[1]) == 2) {
+                                List<int[]> moves = boardController.getLegalMoves(endPos[0], endPos[1], false);
+
+                                for (int[] move : moves) {
+                                    if(Math.abs(move[0]) != 2 || Math.abs(move[1]) != 2) {
+                                        moves.remove(move);
+                                    }
+                                }
+
+                                if(!moves.isEmpty()) {
+                                    waitForLegalMove = true;
+
+                                    System.out.println("Du kan lave et dobbelttræk! Indtast dit slutkoordinat.");
+                                    startPos = endPos;
+                                    endPos = boardController.getPostionFromString(scan.nextLine());
+
+                                    for (int[] move : moves) {
+                                        if((startPos[0]+move[0]) == endPos[0] && (startPos[1]+move[1]) == endPos[1]) {
+                                            if(boardController.move(startPos, endPos) == true) {
+                                                System.out.println("Træk accepteret");
+                                            } else {
+                                                System.out.println("Ulovligt træk! Prøv igen.");
+                                            }
+                                            break;
+                                        } else {
+                                            System.out.println("Ulovligt træk! Prøv igen.");
+                                        }
+                                    }
+                                } else {
+                                    waitForLegalMove = false;
+                                }
+                            } else {
+                                waitForLegalMove = false;
+                            }
+                        } while (waitForLegalMove);
                     } else {
                         System.out.println("Ulovligt træk! Prøv igen.");
                     }
