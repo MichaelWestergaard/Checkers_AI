@@ -12,6 +12,7 @@ public class BoardController {
     PieceType[][] board;
     int whiteLeft = 0, blackLeft = 0;
 
+
     void resetBoard(){
         //https://thumbs.dreamstime.com/z/checkers-board-chess-board-black-white-checkers-game-76944480.jpg
         board = new PieceType[][]{
@@ -461,6 +462,7 @@ public class BoardController {
         return false;
     }
 
+
     PieceType getType(int x, int y){
 
         if((x < 0 || x > 7) || (y < 0 || y > 7)) {
@@ -470,13 +472,12 @@ public class BoardController {
         return board[x][y];
     }
 
-    PieceType getType(PieceType[][] gameBoard, int x, int y){
+    PieceType getType(PieceType[][] board, int x, int y){
 
         if((x < 0 || x > 7) || (y < 0 || y > 7)) {
             return null;
         }
-
-        return gameBoard[x][y];
+        return board[x][y];
     }
 
     public PieceType getWinner(PieceType[][] gameBoard){
@@ -554,6 +555,54 @@ public class BoardController {
         } else {
             return null;
         }
+    }
+
+    int amountOfPiecesThatCanBeAttacked(PieceType[][] board, PieceType type){
+        int result = 0;
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if(!board[i][j].equals(PieceType.EMPTY)){
+                    if(canBeAttacked(board, type, new int[] {i,j}))
+                        result++;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    boolean canBeAttacked(PieceType[][] board, PieceType type, int[] piece){
+        List<PieceType> oppositeColors = null;
+        List<PieceType> myColors = null;
+
+        switch (type){
+            case WHITE:
+            case CROWNED_WHITE:
+                oppositeColors = Arrays.asList(PieceType.BLACK, PieceType.CROWNED_BLACK);
+                myColors = Arrays.asList(PieceType.WHITE, PieceType.CROWNED_WHITE);
+                break;
+            case BLACK:
+            case CROWNED_BLACK:
+                oppositeColors = Arrays.asList(PieceType.WHITE, PieceType.CROWNED_WHITE);
+                myColors = Arrays.asList(PieceType.BLACK, PieceType.CROWNED_BLACK);
+                break;
+        }
+
+        int[][] possibleDirections = new int[][] {{-1,-1}, {-1,1}, {1,-1}, {1,1}};
+        int[][] directionAttacks = new int[][] {{1,1}, {1,-1}, {-1,1}, {-1,-1}};
+
+        int i = 0;
+        if(myColors.contains(getType(piece[0], piece[1])))
+            for(int[] direction : possibleDirections){
+                if(oppositeColors.contains(getType(board,piece[0]+direction[0],piece[1]+direction[1]))){
+                    if(PieceType.EMPTY.equals(getType(board,piece[0]+directionAttacks[i][0],piece[1]+directionAttacks[i][1]))){
+                        return true;
+                    }
+                }
+                i++;
+            }
+        return false;
     }
 
 }
