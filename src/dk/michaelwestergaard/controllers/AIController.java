@@ -23,13 +23,13 @@ public class AIController {
         this.boardController = boardController;
     }
 
-    public void bestMove(PieceType[][] board) {
+    public void bestMove(PieceType[][] board, boolean hasJustAttacked) {
         bestMoves = new ArrayList<Move>();
 
         alphaBeta(board, 0, aiType, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
         int maxValue;
-        int bestIndex = 0;
+        int bestIndex = Integer.MIN_VALUE;
         boolean hasAttackMove = false;
 
         //Loop bestMoves and find the best score
@@ -53,7 +53,9 @@ public class AIController {
                         bestIndex = i;
                     }
                 } else { //Normal move
-                    if(!hasAttackMove) {
+                    System.out.println(hasAttackMove);
+                    System.out.println(hasJustAttacked);
+                    if(!hasAttackMove && !hasJustAttacked) {
                         if (maxValue < currentMove.getScore()) {
                             maxValue = currentMove.getScore();
                             bestIndex = i;
@@ -96,9 +98,17 @@ public class AIController {
         }
 
         //We found the best move
-        Move bestMove = bestMoves.get(bestIndex);
-        System.out.println("Best index: "+ bestIndex + " Best Move: " +bestMove);
-        move(bestMove.getMove());
+        if(bestIndex != Integer.MIN_VALUE) {
+            Move bestMove = bestMoves.get(bestIndex);
+            System.out.println("Best index: " + bestIndex + " Best Move: " + bestMove);
+            move(bestMove.getMove());
+        } else {
+            hasAttackMove = false;
+        }
+
+        if(hasAttackMove) {
+            bestMove(boardController.board, true);
+        }
     }
 
     private void move(int[] move){
@@ -131,6 +141,8 @@ public class AIController {
 
     private int alphaBeta(PieceType[][] board, int depth, PieceType player, int alpha, int beta){
 
+        System.out.println("Player: " +player);
+
         //If max depth or game is ended return evaluation of the current board
         if(depth == MAX_SEARCH_DEPTH || boardController.getWinner(board) != null){
             if(boardController.getWinner(board) != null){
@@ -160,6 +172,7 @@ public class AIController {
             int bestValue = Integer.MIN_VALUE;
 
             List<int[]> legalMoves = getAllLegalMoves(board, player);
+            System.out.println("legals " + legalMoves.size());
             for (int i = 0; i < legalMoves.size(); i++) {
 
                 //Make move
@@ -195,6 +208,7 @@ public class AIController {
 
                 int currentValue = alphaBeta(newBoard, depth+1, aiType, alpha, beta);
 
+                System.out.println("CurrentValue " + currentValue + " Depth: " + depth);
                 //Find min value
                 bestValue = Integer.min(bestValue, currentValue);
 
@@ -282,10 +296,17 @@ public class AIController {
             types.add(PieceType.CROWNED_WHITE);
         }
 
+        boardController.showBoard(board);
+
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 if (types.contains(board[i][j])) {
-                    List<int[]> aiMoves = boardController.getLegalMoves(i, j, true);
+                    System.out.println("types: " + types);
+                    System.out.println("board: " + board[i][j]);
+                    System.out.println("IJ: " + i + ", " + j);
+
+                    List<int[]> aiMoves = boardController.getLegalMoves(board, i, j, true);
+                    System.out.println("AI moves: " + aiMoves.size());
                     if (aiMoves.size() > 0)
                         moves.addAll(aiMoves);
                 }
@@ -312,7 +333,10 @@ public class AIController {
         }
 
         PieceType type = board[startPos[0]][startPos[1]];
+
+        System.out.println("AI Move start: " + board[startPos[0]][startPos[1]]);
         board[startPos[0]][startPos[1]] = PieceType.EMPTY;
+        System.out.println("AI Move start after: " + board[startPos[0]][startPos[1]]);
 
         if (endPos[0] == 0 || endPos[0] == 7) {
             if (type.equals(PieceType.WHITE)) {
@@ -323,6 +347,9 @@ public class AIController {
         }
 
         board[endPos[0]][endPos[1]] = type;
+
+        System.out.println("AI Move end: " + board[endPos[0]][endPos[1]]);
+
 
         return board;
     }

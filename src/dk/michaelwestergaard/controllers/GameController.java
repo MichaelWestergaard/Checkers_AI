@@ -2,6 +2,7 @@ package dk.michaelwestergaard.controllers;
 
 import dk.michaelwestergaard.PieceType;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class GameController {
@@ -59,7 +60,7 @@ public class GameController {
     }
 
     private void playGame(){
-        //boardController.testBoard3();
+        boardController.testBoard3();
         while(gameInProgress) {
             boardController.showBoard();
 
@@ -78,7 +79,10 @@ public class GameController {
                     startPosition = input.substring(0, 2);
                     endPosition = input.substring(3);
 
-                    if(boardController.move(startPosition, endPosition) == true) {
+                    int[] startPos = boardController.getPostionFromString(startPosition),
+                            endPos = boardController.getPostionFromString(endPosition);
+
+                    if(boardController.move(startPos, endPos) == true) {
                         System.out.println("Træk accepteret");
                         waitForLegalMove = false;
                     } else {
@@ -90,7 +94,7 @@ public class GameController {
             } else { //AI's turn to play
                 System.out.println(gameInProgress);
                 System.out.println("AI's tur!");
-                aiController.bestMove(boardController.board);
+                aiController.bestMove(boardController.board, false);
                 currentPlayer = true;
             }
         }
