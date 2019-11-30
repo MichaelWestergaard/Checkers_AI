@@ -125,7 +125,7 @@ public class BoardController {
         if(startPos.length == 2 && endPos.length == 2){
 
             //If legalmove
-            List<int[]> moves = getLegalMoves(startPos[0], startPos[1], false);
+            List<int[]> moves = getLegalMoves(board, startPos[0], startPos[1], false);
             boolean moved = false, attacked = false;
 
             for(int[] move : moves){
@@ -162,7 +162,7 @@ public class BoardController {
     }
 
     private void multipleMove(int startX, int startY){
-        List<int[]> moves = getLegalMoves(startX, startY, false);
+        List<int[]> moves = getLegalMoves(board, startX, startY, false);
         boolean attacked = false;
 
         int[] endPos = new int[2];
@@ -246,12 +246,15 @@ public class BoardController {
         board[endX][endY] = type;
     }
 
-    List<int[]> getLegalMoves(int x, int y, boolean AI){
+    List<int[]> getLegalMoves(PieceType[][] gameBoard, int x, int y, boolean AI){
         ArrayList<int[]> moves = new ArrayList<int[]>();
 
-        PieceType piece = getType(x,y);
+        System.out.println("GetLegalMoves XY: " + x + ", " + y);
 
-        //System.out.println(piece);
+
+        PieceType piece = getType(gameBoard, x, y);
+
+        System.out.println(piece);
 
         if(piece.equals(PieceType.WHITE) || piece.equals(PieceType.CROWNED_WHITE)){
             //Attack moves
@@ -467,6 +470,15 @@ public class BoardController {
         return board[x][y];
     }
 
+    PieceType getType(PieceType[][] gameBoard, int x, int y){
+
+        if((x < 0 || x > 7) || (y < 0 || y > 7)) {
+            return null;
+        }
+
+        return gameBoard[x][y];
+    }
+
     public PieceType getWinner(PieceType[][] gameBoard){
         int whiteLeft = 0;
         int blackLeft = 0;
@@ -502,30 +514,36 @@ public class BoardController {
     }
 
     void showBoard(PieceType[][] gameBoard){
-        System.out.println(" |A|B|C|D|E|F|G|H|");
+        System.out.println(" | A | B | C | D | E | F | G | H |");
+        System.out.println("------------------------------------");
         for (int i = 0; i < gameBoard.length; i++) {
             System.out.print(i+1);
             for (int j = 0; j < gameBoard[i].length; j++) {
                 System.out.print("|");
                 switch (gameBoard[i][j]){
                     case EMPTY:
-                        System.out.print(" ");
+                        System.out.print("   ");
                         break;
                     case WHITE:
-                        System.out.print("W");
-                        whiteLeft++;
+                        System.out.print(" W ");
+                        break;
+                    case CROWNED_WHITE:
+                        System.out.print(" W*");
                         break;
                     case BLACK:
-                        System.out.print("B");
-                        blackLeft++;
+                        System.out.print(" B ");
+                        break;
+                    case CROWNED_BLACK:
+                        System.out.print(" B*");
                         break;
                     default:
-                        System.out.print("C");
+                        System.out.print(" _ ");
                         break;
                 }
             }
             System.out.println("|");
         }
+        System.out.println("White pieces left: " + whiteLeft + " | Black pieces left: " + blackLeft);
     }
 
     public PieceType getWinner(){
