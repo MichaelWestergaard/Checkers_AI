@@ -166,11 +166,9 @@ public class BoardController {
         boolean attacked = false;
 
         int[] endPos = new int[2];
-        System.out.println("start " + startX + ", " + startY);
 
 
         for(int[] move : moves){
-            System.out.println("move loop: " + move[0] + ", " + move[1]);
             if(Math.abs(move[0]) == 2){
                 int x = startX+(move[0]/2);
                 int y = startY+(move[1]/2);
@@ -249,12 +247,7 @@ public class BoardController {
     List<int[]> getLegalMoves(PieceType[][] gameBoard, int x, int y, boolean AI){
         ArrayList<int[]> moves = new ArrayList<int[]>();
 
-        System.out.println("GetLegalMoves XY: " + x + ", " + y);
-
-
         PieceType piece = getType(gameBoard, x, y);
-
-        System.out.println(piece);
 
         if(piece.equals(PieceType.WHITE) || piece.equals(PieceType.CROWNED_WHITE)){
             //Attack moves
