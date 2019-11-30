@@ -239,24 +239,30 @@ public class AIController {
 
         //300 points for pieces that have been killed
         if(aiType.equals(PieceType.BLACK)){
-            score -= Math.abs((whiteNormal+whiteCrowned)-12)*300;
-            score += Math.abs((blackNormal+blackCrowned)-12)*300;
-        } else {
-            score -= Math.abs((blackNormal+blackCrowned)-12)*300;
             score += Math.abs((whiteNormal+whiteCrowned)-12)*300;
+            score -= Math.abs((blackNormal+blackCrowned)-12)*300;
+        } else {
+            score += Math.abs((blackNormal+blackCrowned)-12)*300;
+            score -= Math.abs((whiteNormal+whiteCrowned)-12)*300;
         }
 
         //500 point for crowned pieces
         if(aiType.equals(PieceType.BLACK)){
-            score -= blackCrowned*500;
-            score += whiteCrowned*500;
-        } else {
-            score -= whiteCrowned*500;
             score += blackCrowned*500;
+            score -= whiteCrowned*500;
+        } else {
+            score += whiteCrowned*500;
+            score -= blackCrowned*500;
         }
 
         //300 point for pieces that can be attacked next turn
-
+        if(aiType.equals(PieceType.BLACK)){
+            score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
+            score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
+        } else {
+            score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
+            score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
+        }
 
         //Get higher points the closer the pieces is to getting upgraded to crowned (only if there is nothing to do)
         //
