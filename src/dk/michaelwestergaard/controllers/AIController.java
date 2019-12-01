@@ -17,6 +17,8 @@ public class AIController {
 
     private final int MAX_SEARCH_DEPTH = 6;
 
+    private int[] lastAttackEndPosition = null;
+
     public AIController(PieceType aiType, PieceType playerType, BoardController boardController) {
         this.aiType = aiType;
         this.playerType = playerType;
@@ -25,6 +27,8 @@ public class AIController {
 
     public void bestMove(PieceType[][] board, boolean hasJustAttacked) {
         bestMoves = new ArrayList<Move>();
+        if(!hasJustAttacked)
+            lastAttackEndPosition = null;
 
         alphaBeta(board, 0, aiType, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
@@ -38,10 +42,14 @@ public class AIController {
 
             for (int i = 0; i < bestMoves.size(); i++) {
                 Move currentMove = bestMoves.get(i);
-                System.out.println("Index: " + i +  " Move: "+ currentMove);
 
                 if(Math.abs(currentMove.getMove()[2]) == 2) {
-                    System.out.println("CAN ATTACK!! DO IT ");
+                    if(hasJustAttacked){
+                        if(currentMove.getMove()[0] != lastAttackEndPosition[0] && currentMove.getMove()[1] != lastAttackEndPosition[1]){
+                            continue;
+                        }
+                    }
+
                     if(hasAttackMove){
                         if(maxValue < currentMove.getScore()){
                             maxValue = currentMove.getScore();
@@ -68,10 +76,14 @@ public class AIController {
 
             for (int i = 0; i < bestMoves.size(); i++) {
                 Move currentMove = bestMoves.get(i);
-                System.out.println("Index: " + i +  " Move: "+ currentMove);
 
                 if(Math.abs(currentMove.getMove()[2]) == 2) {
-                    System.out.println("CAN ATTACK!! DO IT ");
+                    if(hasJustAttacked){
+                        if(currentMove.getMove()[0] != lastAttackEndPosition[0] && currentMove.getMove()[1] != lastAttackEndPosition[1]){
+                            continue;
+                        }
+                    }
+
                     if(hasAttackMove){
                         if(maxValue > currentMove.getScore()){
                             maxValue = currentMove.getScore();
@@ -83,7 +95,7 @@ public class AIController {
                         bestIndex = i;
                     }
                 } else { //Normal move
-                    if(!hasAttackMove) {
+                    if(!hasAttackMove && !hasJustAttacked) {
                         if (maxValue > currentMove.getScore()) {
                             maxValue = currentMove.getScore();
                             bestIndex = i;
@@ -94,18 +106,31 @@ public class AIController {
             }
 
         }
-
+        int[] endPos = new int[2];
+        PieceType startType = null;
         //We found the best move
         if(bestIndex != Integer.MIN_VALUE) {
             Move bestMove = bestMoves.get(bestIndex);
             System.out.println("Best index: " + bestIndex + " Best Move: " + bestMove);
+            startType = boardController.getType(board, bestMove.getMove()[0], bestMove.getMove()[1]);
             move(bestMove.getMove());
+            if(hasAttackMove){
+                endPos = new int[]{(bestMove.getMove()[0] + bestMove.getMove()[2]), (bestMove.getMove()[1] + bestMove.getMove()[3])};
+                lastAttackEndPosition = endPos;
+            }
+
         } else {
             hasAttackMove = false;
         }
 
         if(hasAttackMove) {
-            bestMove(boardController.board, true);
+            if(endPos[0] == 0 || endPos[0] == 7){
+                if(!startType.equals(PieceType.BLACK) && !startType.equals(PieceType.WHITE)){
+                    bestMove(boardController.board, true);
+                }
+            } else {
+                bestMove(boardController.board, true);
+            }
         }
     }
 
@@ -144,15 +169,15 @@ public class AIController {
             if(boardController.getWinner(board) != null){
                 if(boardController.getWinner(board).equals(PieceType.BLACK)){
                     if(aiType.equals(PieceType.BLACK)){
-                        return 10000;
+                        return 100000;
                     } else {
-                        return -10000;
+                        return -100000;
                     }
                 } else if(boardController.getWinner(board).equals(PieceType.WHITE)) {
                     if(aiType.equals(PieceType.WHITE)){
-                        return 10000;
+                        return 100000;
                     } else {
-                        return -10000;
+                        return -100000;
                     }
                 }
             }
