@@ -60,7 +60,7 @@ public class GameController {
     }
 
     private void playGame(){
-        //boardController.testBoard3();
+        boardController.testBoard5();
         while(gameInProgress) {
             boardController.showBoard();
 

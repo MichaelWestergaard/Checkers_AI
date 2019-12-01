@@ -68,13 +68,26 @@ public class BoardController {
 
     void testBoard4(){
         board = new PieceType[][]{
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.CROWNED_BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
                 {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
                 {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
-                {PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+        };
+    }
+
+    void testBoard5(){
+        board = new PieceType[][]{
                 {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
                 {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
-                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
-                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.WHITE, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
+                {PieceType.EMPTY, PieceType.BLACK, PieceType.EMPTY, PieceType.BLACK, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
                 {PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY, PieceType.EMPTY},
         };
     }
@@ -129,8 +142,12 @@ public class BoardController {
             List<int[]> moves = getLegalMoves(board, startPos[0], startPos[1], false);
             boolean moved = false, attacked = false;
 
+            PieceType startType = null, endType = null;
+
             for(int[] move : moves){
                 if((startPos[0]+move[0]) == endPos[0] && (startPos[1]+move[1]) == endPos[1]){
+                    startType = getType(board, startPos[0], startPos[1]);
+                    endType = getType(board, endPos[0], endPos[1]);
 
                     if(Math.abs(startPos[0]-endPos[0]) == 2){
                         int x = startPos[0]+(move[0]/2);
@@ -146,8 +163,13 @@ public class BoardController {
             }
 
             if(attacked){
-                System.out.println("attacked");
-                multipleMove(endPos[0], endPos[1]);
+                if(endPos[0] == 0 || endPos[0] == 7){
+                    if(!startType.equals(PieceType.BLACK) && !startType.equals(PieceType.WHITE)){
+                        multipleMove(endPos[0], endPos[1]);
+                    }
+                } else {
+                    multipleMove(endPos[0], endPos[1]);
+                }
             }
 
             if(moved)
