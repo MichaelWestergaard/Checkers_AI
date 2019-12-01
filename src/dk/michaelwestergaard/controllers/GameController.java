@@ -15,6 +15,8 @@ public class GameController {
     PieceType playerType, aiType;
     String input, startPosition, endPosition;
 
+    AIController aiController1, aiController2;
+
     boolean botvsbot = false;
 
     public void startGame(){
@@ -25,7 +27,7 @@ public class GameController {
     }
 
     private void chooseColor(){
-        System.out.println("Vælg farve: Sort (1) | Hvid (2)");
+        System.out.println("Vælg farve: Sort (1) | Hvid (2) | AI vs AI (3)");
         int input;
         Scanner scanColor = new Scanner(System.in);
         boolean waitForInput = true;
@@ -47,6 +49,16 @@ public class GameController {
                     System.out.println("Du spiller med de hvide brikker");
                     waitForInput = false;
                     break;
+                case 3:
+                    playerType = PieceType.WHITE;
+                    aiType = PieceType.BLACK;
+                    botvsbot = true;
+                    aiController1 = new AIController(aiType, playerType, boardController);
+                    aiController2 = new AIController(playerType, aiType, boardController);
+                    currentPlayer = false;
+                    System.out.println("Du spiller med de hvide brikker");
+                    waitForInput = false;
+                    break;
                 default:
                     waitForInput = true;
                     System.out.println("Vælg venligst 1 eller 2!");
@@ -57,10 +69,34 @@ public class GameController {
 
         aiController = new AIController(aiType, playerType, boardController);
         gameInProgress = true;
+
+        if(botvsbot){
+            botvsbot();
+        }
+    }
+
+    private void botvsbot(){
+        while(gameInProgress) {
+            boardController.showBoard();
+
+            if(boardController.getWinner() != null){
+                System.out.println(boardController.getWinner() + " Vandt!");
+                gameInProgress = false;
+                break;
+            }
+            if(currentPlayer) { //Players turn to play
+                System.out.println("AI1's tur!");
+                aiController1.bestMove(boardController.board, false);
+                currentPlayer = false;
+            } else { //AI's turn to play
+                System.out.println("AI2's tur!");
+                aiController2.bestMove(boardController.board, false);
+                currentPlayer = true;
+            }
+        }
     }
 
     private void playGame(){
-        //boardController.testBoard5();
         while(gameInProgress) {
             boardController.showBoard();
 
