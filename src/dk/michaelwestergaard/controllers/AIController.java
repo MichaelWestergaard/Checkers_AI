@@ -45,6 +45,7 @@ public class AIController {
             for (int i = 0; i < bestMoves.size(); i++) {
                 Move currentMove = bestMoves.get(i);
 
+                System.out.println(currentMove);
                 if(Math.abs(currentMove.getMove()[2]) == 2) {
                     if(hasJustAttacked){
                         if(currentMove.getMove()[0] != lastAttackEndPosition[0] && currentMove.getMove()[1] != lastAttackEndPosition[1]){
@@ -287,7 +288,7 @@ public class AIController {
         }
 
         //300 point for pieces that can be attacked next turn
-
+        /*
         if(aiType.equals(PieceType.BLACK)){
             score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
             score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
@@ -295,6 +296,7 @@ public class AIController {
             score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
             score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
         }
+         */
 
         if(aiType.equals(PieceType.BLACK)){
             score /= whiteCrowned+whiteNormal;
