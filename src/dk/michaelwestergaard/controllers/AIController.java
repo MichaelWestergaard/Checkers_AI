@@ -4,6 +4,7 @@ import dk.michaelwestergaard.Move;
 import dk.michaelwestergaard.PieceType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AIController {
@@ -31,6 +32,7 @@ public class AIController {
             lastAttackEndPosition = null;
 
         alphaBeta(board, 0, aiType, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        Collections.shuffle(bestMoves);
 
         int maxValue;
         int bestIndex = Integer.MIN_VALUE;
@@ -42,6 +44,7 @@ public class AIController {
 
             for (int i = 0; i < bestMoves.size(); i++) {
                 Move currentMove = bestMoves.get(i);
+                System.out.println(currentMove);
 
                 if(Math.abs(currentMove.getMove()[2]) == 2) {
                     if(hasJustAttacked){
@@ -235,7 +238,7 @@ public class AIController {
                 }
 
                 if(depth == 0){
-                    bestMoves.add(new Move(legalMoves.get(i), currentValue));
+                    bestMoves.add(new Move(legalMoves.get(i), bestValue));
                 }
             }
 
@@ -285,17 +288,18 @@ public class AIController {
         }
 
         //300 point for pieces that can be attacked next turn
+        /*
         if(aiType.equals(PieceType.BLACK)){
-            score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
-            score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
-        } else {
-            score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
             score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
+            score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
+        } else {
+            score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
+            score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
         }
+        */
+
 
         //Get higher points the closer the pieces is to getting upgraded to crowned (only if there is nothing to do)
-        //
-
 
         return score;
     }
