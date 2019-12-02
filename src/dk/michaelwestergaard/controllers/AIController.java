@@ -359,7 +359,7 @@ public class AIController {
         }
 
         //300 point for pieces that can be attacked next turn
-
+/*
         if(aiType.equals(PieceType.BLACK)){
             score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
             score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
@@ -367,7 +367,7 @@ public class AIController {
             score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
             score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
         }
-
+*/
 
         /*
         if(aiType.equals(PieceType.BLACK)){
