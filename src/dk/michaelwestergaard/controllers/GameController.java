@@ -27,7 +27,7 @@ public class GameController {
     }
 
     private void chooseColor(){
-        System.out.println("Vælg farve: Sort (1) | Hvid (2) | AI vs AI (3)");
+        System.out.println("Vælg farve: Sort (1) | Hvid (2) | AI vs AI (3) | Load Game (4)");
         int input;
         Scanner scanColor = new Scanner(System.in);
         boolean waitForInput = true;
@@ -59,6 +59,20 @@ public class GameController {
                     System.out.println("Du spiller med de hvide brikker");
                     waitForInput = false;
                     break;
+                case 4:
+                    System.out.println("Indsæt board (kun rækker 1-8)");
+                    Scanner scannerBoard = new Scanner(System.in);
+                    String[] gameRow = new String[8];
+
+                    for (int i = 0; i < 8; i++) {
+                        gameRow[i] = scannerBoard.nextLine();
+                    }
+                    scanColor = null;
+                    loadGame(gameRow);
+
+                    waitForInput = false;
+
+                    break;
                 default:
                     waitForInput = true;
                     System.out.println("Vælg venligst 1 eller 2!");
@@ -72,6 +86,144 @@ public class GameController {
 
         if(botvsbot){
             botvsbot();
+        }
+    }
+
+    private void loadGame(String[] gameRow){
+        PieceType[][] board = new PieceType[8][8];
+
+        String[] test;
+        for (int i = 0; i < gameRow.length; i++) {
+            if(gameRow[i].substring(2,5).equals("   ")){
+                board[i][0] = PieceType.EMPTY;
+            } else if(gameRow[i].substring(2,5).equals(" W ")){
+                board[i][0] = PieceType.WHITE;
+            } else if(gameRow[i].substring(2,5).equals(" W*")){
+                board[i][0] = PieceType.CROWNED_WHITE;
+            } else if(gameRow[i].substring(2,5).equals(" B ")){
+                board[i][0] = PieceType.BLACK;
+            } else if(gameRow[i].substring(2,5).equals(" W*")){
+                board[i][0] = PieceType.CROWNED_BLACK;
+            }
+            if(gameRow[i].substring(6,9).equals("   ")){
+                board[i][1] = PieceType.EMPTY;
+            } else if(gameRow[i].substring(6,9).equals(" W ")){
+                board[i][1] = PieceType.WHITE;
+            } else if(gameRow[i].substring(6,9).equals(" W*")){
+                board[i][1] = PieceType.CROWNED_WHITE;
+            } else if(gameRow[i].substring(6,9).equals(" B ")){
+                board[i][1] = PieceType.BLACK;
+            } else if(gameRow[i].substring(6,9).equals(" W*")){
+                board[i][1] = PieceType.CROWNED_BLACK;
+            }
+            if(gameRow[i].substring(10,13).equals("   ")){
+                board[i][2] = PieceType.EMPTY;
+            } else if(gameRow[i].substring(10,13).equals(" W ")){
+                board[i][2] = PieceType.WHITE;
+            } else if(gameRow[i].substring(10,13).equals(" W*")){
+                board[i][2] = PieceType.CROWNED_WHITE;
+            } else if(gameRow[i].substring(10,13).equals(" B ")){
+                board[i][2] = PieceType.BLACK;
+            } else if(gameRow[i].substring(10,13).equals(" W*")){
+                board[i][2] = PieceType.CROWNED_BLACK;
+            }
+            if(gameRow[i].substring(14,17).equals("   ")){
+                board[i][3] = PieceType.EMPTY;
+            } else if(gameRow[i].substring(14,17).equals(" W ")){
+                board[i][3] = PieceType.WHITE;
+            } else if(gameRow[i].substring(14,17).equals(" W*")){
+                board[i][3] = PieceType.CROWNED_WHITE;
+            } else if(gameRow[i].substring(14,17).equals(" B ")){
+                board[i][3] = PieceType.BLACK;
+            } else if(gameRow[i].substring(14,17).equals(" W*")){
+                board[i][3] = PieceType.CROWNED_BLACK;
+            }
+            if(gameRow[i].substring(18,21).equals("   ")){
+                board[i][4] = PieceType.EMPTY;
+            } else if(gameRow[i].substring(18,21).equals(" W ")){
+                board[i][4] = PieceType.WHITE;
+            } else if(gameRow[i].substring(18,21).equals(" W*")){
+                board[i][4] = PieceType.CROWNED_WHITE;
+            } else if(gameRow[i].substring(18,21).equals(" B ")){
+                board[i][4] = PieceType.BLACK;
+            } else if(gameRow[i].substring(18,21).equals(" W*")){
+                board[i][4] = PieceType.CROWNED_BLACK;
+            }
+            if(gameRow[i].substring(22,25).equals("   ")){
+                board[i][5] = PieceType.EMPTY;
+            } else if(gameRow[i].substring(22,25).equals(" W ")){
+                board[i][5] = PieceType.WHITE;
+            } else if(gameRow[i].substring(22,25).equals(" W*")){
+                board[i][5] = PieceType.CROWNED_WHITE;
+            } else if(gameRow[i].substring(22,25).equals(" B ")){
+                board[i][5] = PieceType.BLACK;
+            } else if(gameRow[i].substring(22,25).equals(" W*")){
+                board[i][5] = PieceType.CROWNED_BLACK;
+            }
+            if(gameRow[i].substring(26,29).equals("   ")){
+                board[i][6] = PieceType.EMPTY;
+            } else if(gameRow[i].substring(26,29).equals(" W ")){
+                board[i][6] = PieceType.WHITE;
+            } else if(gameRow[i].substring(26,29).equals(" W*")){
+                board[i][6] = PieceType.CROWNED_WHITE;
+            } else if(gameRow[i].substring(26,29).equals(" B ")){
+                board[i][6] = PieceType.BLACK;
+            } else if(gameRow[i].substring(26,29).equals(" W*")){
+                board[i][6] = PieceType.CROWNED_BLACK;
+            }
+            if(gameRow[i].substring(30,33).equals("   ")){
+                board[i][7] = PieceType.EMPTY;
+            } else if(gameRow[i].substring(30,33).equals(" W ")){
+                board[i][7] = PieceType.WHITE;
+            } else if(gameRow[i].substring(30,33).equals(" W*")){
+                board[i][7] = PieceType.CROWNED_WHITE;
+            } else if(gameRow[i].substring(30,33).equals(" B ")){
+                board[i][7] = PieceType.BLACK;
+            } else if(gameRow[i].substring(30,33).equals(" W*")){
+                board[i][7] = PieceType.CROWNED_BLACK;
+            }
+        }
+
+        boardController.board = board;
+        boardController.showBoard();
+
+        System.out.println("Vælg farve: Sort (1) | Hvid (2) | AI vs AI (3)");
+        int input;
+        Scanner scanColor = new Scanner(System.in);
+        boolean waitForInput = true;
+        while(waitForInput){
+
+            input = scanColor.nextInt();
+            switch (input){
+                case 1:
+                    playerType = PieceType.BLACK;
+                    aiType = PieceType.WHITE;
+                    waitForInput = false;
+                    currentPlayer = true;
+                    System.out.println("Du spiller med de sorte brikker");
+                    break;
+                case 2:
+                    playerType = PieceType.WHITE;
+                    aiType = PieceType.BLACK;
+                    currentPlayer = false;
+                    System.out.println("Du spiller med de hvide brikker");
+                    waitForInput = false;
+                    break;
+                case 3:
+                    playerType = PieceType.WHITE;
+                    aiType = PieceType.BLACK;
+                    botvsbot = true;
+                    aiController1 = new AIController(aiType, playerType, boardController);
+                    aiController2 = new AIController(playerType, aiType, boardController);
+                    currentPlayer = false;
+                    waitForInput = false;
+                    break;
+                default:
+                    waitForInput = true;
+                    System.out.println("Vælg venligst 1 eller 2!");
+                    break;
+            }
+
         }
     }
 

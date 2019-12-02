@@ -16,7 +16,7 @@ public class AIController {
 
     private List<Move> bestMoves;
 
-    private final int MAX_SEARCH_DEPTH = 9;
+    private final int MAX_SEARCH_DEPTH =  10;
 
     private int[] lastAttackEndPosition = null;
 
@@ -205,7 +205,7 @@ public class AIController {
                 bestValue = Math.max(bestValue, currentValue);
 
                 //alpha = (alpha >= bestValue) ? alpha : bestValue;
-                alpha = Integer.max(alpha, currentValue);
+                alpha = Integer.max(alpha, bestValue);
 
                 if(alpha >= beta) {
                     break;
@@ -213,7 +213,7 @@ public class AIController {
 
                 //If depth 0 add move and score to bestmoves list for later use
                 if(depth == 0){
-                    bestMoves.add(new Move(legalMoves.get(i), currentValue));
+                    bestMoves.add(new Move(legalMoves.get(i), bestValue));
                 }
             }
             return bestValue;
@@ -231,14 +231,14 @@ public class AIController {
                 bestValue = Integer.min(bestValue, currentValue);
 
                 //beta = (beta <= currentValue) ? beta : currentValue;
-                beta = Integer.min(beta, currentValue);
+                beta = Integer.min(beta, bestValue);
 
                 if(alpha >= beta) {
                     break;
                 }
 
                 if(depth == 0){
-                    bestMoves.add(new Move(legalMoves.get(i), currentValue));
+                    bestMoves.add(new Move(legalMoves.get(i), bestValue));
                 }
             }
 
@@ -246,8 +246,32 @@ public class AIController {
         }
     }
 
+    private int positionValue(int x, int y){
+        if(x == 0 || x == 7 || y == 0 || y == 7) return 4;
+        if(x == 1 || x == 6 || y == 1 || y == 6) return 3;
+        if(x == 2 || x == 5 || y == 2 || y == 5) return 2;
+        return 1;
+    }
+
+    //Get more points the closer piece is to being crowned
+    private int stepsAwayFromCrowned(int x, PieceType type){
+        int score = 0;
+
+        int result;
+        if(type.equals(PieceType.BLACK)){
+            result = Math.abs(x - 7);
+        } else {
+            result = x;
+        }
+
+        score = result*10;
+
+        return score;
+    }
+
     private int staticEvaluation(PieceType[][] board){
         int score = 0;
+        int positionValueWhite = 0, positionValueBlack = 0;
 
         int blackNormal = 0, blackCrowned = 0, whiteNormal = 0, whiteCrowned = 0;
 
@@ -258,10 +282,12 @@ public class AIController {
 
                 if (piece.equals(PieceType.BLACK)) {
                     blackNormal++;
+                    positionValueBlack += stepsAwayFromCrowned(i, PieceType.BLACK);
                 } else if (piece.equals(PieceType.CROWNED_BLACK)) {
                     blackCrowned++;
                 } else if (piece.equals(PieceType.WHITE)) {
                     whiteNormal++;
+                    positionValueBlack += stepsAwayFromCrowned(i, PieceType.WHITE);
                 } else if (piece.equals(PieceType.CROWNED_WHITE)) {
                     whiteCrowned++;
                 }
@@ -287,6 +313,15 @@ public class AIController {
             score -= blackCrowned*600;
         }
 
+        //Position score
+        if(aiType.equals(PieceType.BLACK)){
+            score += positionValueBlack;
+            score -= positionValueWhite;
+        } else {
+            score += positionValueWhite;
+            score -= positionValueBlack;
+        }
+
         //300 point for pieces that can be attacked next turn
         /*
         if(aiType.equals(PieceType.BLACK)){
@@ -298,14 +333,17 @@ public class AIController {
         }
          */
 
+        /*
         if(aiType.equals(PieceType.BLACK)){
             score /= whiteCrowned+whiteNormal;
         } else {
             score /= blackCrowned+blackNormal;
         }
+        */
 
 
         //Get higher points the closer the pieces is to getting upgraded to crowned (only if there is nothing to do)
+
 
         return score;
     }
