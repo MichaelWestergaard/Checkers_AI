@@ -248,12 +248,12 @@ public class AIController {
 
     //Get more points the closer piece is to being crowned
     private int stepsAwayFromCrowned(int x, PieceType type){
-        int score = 0;
+        int score;
 
-        int result;
+        int result = 0;
         if(type.equals(PieceType.BLACK)){
             result = Math.abs(x - 7);
-        } else {
+        } else if(type.equals(PieceType.WHITE)){
             result = x;
         }
 
