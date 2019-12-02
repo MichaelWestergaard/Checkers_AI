@@ -35,7 +35,7 @@ public class AIController {
         Collections.shuffle(bestMoves);
 
         int maxValue;
-        int bestIndex = Integer.MIN_VALUE;
+        int bestIndex = Integer.MIN_VALUE+1;
         boolean hasAttackMove = false;
 
         //Loop bestMoves and find the best score
@@ -112,7 +112,7 @@ public class AIController {
         int[] endPos = new int[2];
         PieceType startType = null;
         //We found the best move
-        if(bestIndex != Integer.MIN_VALUE) {
+        if(bestIndex != Integer.MIN_VALUE+1) {
             Move bestMove = bestMoves.get(bestIndex);
             System.out.println("Best index: " + bestIndex + " Best Move: " + bestMove);
             startType = boardController.getType(board, bestMove.getMove()[0], bestMove.getMove()[1]);
