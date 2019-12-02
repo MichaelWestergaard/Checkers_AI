@@ -36,7 +36,7 @@ public class AIController {
         Collections.shuffle(bestMoves);
 
         int maxValue;
-        int bestIndex = Integer.MIN_VALUE;
+        int bestIndex = Integer.MIN_VALUE+1;
         boolean hasAttackMove = false;
 
         //Loop bestMoves and find the best score
@@ -113,7 +113,7 @@ public class AIController {
         int[] endPos = new int[2];
         PieceType startType = null;
         //We found the best move
-        if(bestIndex != Integer.MIN_VALUE) {
+        if(bestIndex != Integer.MIN_VALUE+1) {
             Move bestMove = bestMoves.get(bestIndex);
             System.out.println("Best index: " + bestIndex + " Best Move: " + bestMove);
             startType = boardController.getType(board, bestMove.getMove()[0], bestMove.getMove()[1]);
@@ -249,12 +249,12 @@ public class AIController {
 
     //Get more points the closer piece is to being crowned
     private int stepsAwayFromCrowned(int x, PieceType type){
-        int score = 0;
+        int score;
 
-        int result;
+        int result = 0;
         if(type.equals(PieceType.BLACK)){
             result = Math.abs(x - 7);
-        } else {
+        } else if(type.equals(PieceType.WHITE)){
             result = x;
         }
 
