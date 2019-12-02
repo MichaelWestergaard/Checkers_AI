@@ -252,6 +252,10 @@ public class AIController {
                     bestMoves.add(new Move(legalMoves.get(i), bestValue));
                 }
             }
+
+            if(legalMoves.isEmpty())
+                return staticEvaluation(board);
+
             return bestValue;
         } else { //Minimizer
             int bestValue = Integer.MAX_VALUE-1;
@@ -277,6 +281,9 @@ public class AIController {
                     bestMoves.add(new Move(legalMoves.get(i), bestValue));
                 }
             }
+
+            if(legalMoves.isEmpty())
+                return staticEvaluation(board);
 
             return bestValue;
         }
