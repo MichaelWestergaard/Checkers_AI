@@ -16,7 +16,7 @@ public class AIController {
 
     private List<Move> bestMoves;
 
-    private final int MAX_SEARCH_DEPTH = 9;
+    private final int MAX_SEARCH_DEPTH = 12;
 
     private int[] lastAttackEndPosition = null;
 
@@ -205,7 +205,7 @@ public class AIController {
                 bestValue = Math.max(bestValue, currentValue);
 
                 //alpha = (alpha >= bestValue) ? alpha : bestValue;
-                alpha = Integer.max(alpha, currentValue);
+                alpha = Integer.max(alpha, bestValue);
 
                 if(alpha >= beta) {
                     break;
@@ -213,7 +213,7 @@ public class AIController {
 
                 //If depth 0 add move and score to bestmoves list for later use
                 if(depth == 0){
-                    bestMoves.add(new Move(legalMoves.get(i), currentValue));
+                    bestMoves.add(new Move(legalMoves.get(i), bestValue));
                 }
             }
             return bestValue;
@@ -231,7 +231,7 @@ public class AIController {
                 bestValue = Integer.min(bestValue, currentValue);
 
                 //beta = (beta <= currentValue) ? beta : currentValue;
-                beta = Integer.min(beta, currentValue);
+                beta = Integer.min(beta, bestValue);
 
                 if(alpha >= beta) {
                     break;

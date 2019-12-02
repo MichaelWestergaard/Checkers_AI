@@ -274,7 +274,7 @@ public class BoardController {
 
         if(piece.equals(PieceType.WHITE) || piece.equals(PieceType.CROWNED_WHITE)){
             //Attack moves
-            if(canPieceAttack(piece, new int[]{x,y}, new int[]{x+1,y-1}, new int[]{x+2,y-2})){
+            if(canPieceAttack(gameBoard, piece, new int[]{x,y}, new int[]{x+1,y-1}, new int[]{x+2,y-2})){
                 //System.out.println("can attack " + (x+1) + ", " + (y-1));
                 if(AI){
                     moves.add(new int[]{x, y, 2, -2});
@@ -285,7 +285,7 @@ public class BoardController {
                     moves.add(new int[]{2,-2});
                 }
             }
-            if(canPieceAttack(piece, new int[]{x,y}, new int[]{x+1,y+1}, new int[]{x+2,y+2})){
+            if(canPieceAttack(gameBoard, piece, new int[]{x,y}, new int[]{x+1,y+1}, new int[]{x+2,y+2})){
                 //System.out.println("can attack " + (x+1) + ", " + (y+1));
                 if(AI){
                     moves.add(new int[]{x, y, 2, 2});
@@ -317,7 +317,7 @@ public class BoardController {
             //Crowned white moves (same as normal black)
             if(piece.equals(PieceType.CROWNED_WHITE)){
                 //Attack moves
-                if(canPieceAttack(piece, new int[]{x,y}, new int[]{x-1,y-1}, new int[]{x-2,y-2})){
+                if(canPieceAttack(gameBoard, piece, new int[]{x,y}, new int[]{x-1,y-1}, new int[]{x-2,y-2})){
                     //System.out.println("can attack " + (x-1) + ", " + (y-1));
                     if(AI){
                         moves.add(new int[]{x, y, -2, -2});
@@ -329,7 +329,7 @@ public class BoardController {
                         moves.add(new int[]{-2,-2});
                     }
                 }
-                if(canPieceAttack(piece, new int[]{x,y}, new int[]{x-1,y+1}, new int[]{x-2,y+2})){
+                if(canPieceAttack(gameBoard, piece, new int[]{x,y}, new int[]{x-1,y+1}, new int[]{x-2,y+2})){
                     //System.out.println("can attack " + (x-1) + ", " + (y+1));
                     if(AI){
                         moves.add(new int[]{x, y, -2, 2});
@@ -361,7 +361,7 @@ public class BoardController {
         } else if(piece.equals(PieceType.BLACK) || piece.equals(PieceType.CROWNED_BLACK)){
             //Attack moves
 
-            if(canPieceAttack(piece, new int[]{x,y}, new int[]{x-1,y-1}, new int[]{x-2,y-2})){
+            if(canPieceAttack(gameBoard, piece, new int[]{x,y}, new int[]{x-1,y-1}, new int[]{x-2,y-2})){
                 //System.out.println("can attack " + (x-1) + ", " + (y-1));
                 if(AI){
                     moves.add(new int[]{x, y, -2, -2});
@@ -374,7 +374,7 @@ public class BoardController {
                 }
             }
 
-            if(canPieceAttack(piece, new int[]{x,y}, new int[]{x-1,y+1}, new int[]{x-2,y+2})){
+            if(canPieceAttack(gameBoard, piece, new int[]{x,y}, new int[]{x-1,y+1}, new int[]{x-2,y+2})){
                 //System.out.println("can attack " + (x-1) + ", " + (y+1));
                 if(AI){
                     moves.add(new int[]{x, y, -2, 2});
@@ -405,7 +405,7 @@ public class BoardController {
 
             if(piece.equals(PieceType.CROWNED_BLACK)){
                 //Attack moves
-                if(canPieceAttack(piece, new int[]{x,y}, new int[]{x+1,y-1}, new int[]{x+2,y-2})){
+                if(canPieceAttack(gameBoard, piece, new int[]{x,y}, new int[]{x+1,y-1}, new int[]{x+2,y-2})){
                     //System.out.println("can attack " + (x+1) + ", " + (y-1));
                     if(AI){
                         moves.add(new int[]{x, y, 2, -2});
@@ -418,7 +418,7 @@ public class BoardController {
                     }
                 }
 
-                if(canPieceAttack(piece, new int[]{x,y}, new int[]{x+1,y+1}, new int[]{x+2,y+2})){
+                if(canPieceAttack(gameBoard, piece, new int[]{x,y}, new int[]{x+1,y+1}, new int[]{x+2,y+2})){
                     //System.out.println("can attack " + (x+1) + ", " + (y+1));
                     if(AI){
                         moves.add(new int[]{x, y, 2, 2});
@@ -452,7 +452,7 @@ public class BoardController {
         return moves;
     }
 
-    boolean canPieceAttack(PieceType type, int[] start, int[] opponent, int[] end){
+    boolean canPieceAttack(PieceType[][] board, PieceType type, int[] start, int[] opponent, int[] end){
         List<PieceType> oppositeColors = null;
 
         switch (type){
@@ -466,9 +466,9 @@ public class BoardController {
                 break;
         }
 
-        if(PieceType.EMPTY.equals(getType(end[0], end[1]))){
+        if(PieceType.EMPTY.equals(getType(board ,end[0], end[1]))){
             if(oppositeColors != null){
-                if(oppositeColors.contains(getType(opponent[0], opponent[1]))){
+                if(oppositeColors.contains(getType(board, opponent[0], opponent[1]))){
                     return true;
                 }
             }
