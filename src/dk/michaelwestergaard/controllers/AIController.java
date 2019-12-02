@@ -238,7 +238,7 @@ public class AIController {
                 }
 
                 if(depth == 0){
-                    bestMoves.add(new Move(legalMoves.get(i), currentValue));
+                    bestMoves.add(new Move(legalMoves.get(i), bestValue));
                 }
             }
 
@@ -246,8 +246,25 @@ public class AIController {
         }
     }
 
+    //Get more points the closer piece is to being crowned
+    private int stepsAwayFromCrowned(int x, PieceType type){
+        int score = 0;
+
+        int result;
+        if(type.equals(PieceType.BLACK)){
+            result = Math.abs(x - 7);
+        } else {
+            result = x;
+        }
+
+        score = result*10;
+
+        return score;
+    }
+
     private int staticEvaluation(PieceType[][] board){
         int score = 0;
+        int positionValueWhite = 0, positionValueBlack = 0;
 
         int blackNormal = 0, blackCrowned = 0, whiteNormal = 0, whiteCrowned = 0;
 
@@ -258,10 +275,12 @@ public class AIController {
 
                 if (piece.equals(PieceType.BLACK)) {
                     blackNormal++;
+                    positionValueBlack += stepsAwayFromCrowned(i, PieceType.BLACK);
                 } else if (piece.equals(PieceType.CROWNED_BLACK)) {
                     blackCrowned++;
                 } else if (piece.equals(PieceType.WHITE)) {
                     whiteNormal++;
+                    positionValueBlack += stepsAwayFromCrowned(i, PieceType.WHITE);
                 } else if (piece.equals(PieceType.CROWNED_WHITE)) {
                     whiteCrowned++;
                 }
@@ -287,8 +306,17 @@ public class AIController {
             score -= blackCrowned*600;
         }
 
+        //Position score
+        if(aiType.equals(PieceType.BLACK)){
+            score += positionValueBlack;
+            score -= positionValueWhite;
+        } else {
+            score += positionValueWhite;
+            score -= positionValueBlack;
+        }
+
         //300 point for pieces that can be attacked next turn
-        /*
+
         if(aiType.equals(PieceType.BLACK)){
             score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
             score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
@@ -296,16 +324,15 @@ public class AIController {
             score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
             score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
         }
-         */
 
+
+        /*
         if(aiType.equals(PieceType.BLACK)){
             score /= whiteCrowned+whiteNormal;
         } else {
             score /= blackCrowned+blackNormal;
         }
-
-
-        //Get higher points the closer the pieces is to getting upgraded to crowned (only if there is nothing to do)
+        */
 
         return score;
     }
