@@ -32,6 +32,7 @@ public class AIController {
             lastAttackEndPosition = null;
 
         alphaBeta(board, 0, aiType, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        System.out.println(bestMoves);
         Collections.shuffle(bestMoves);
 
         int bestIndex = Integer.MIN_VALUE+1;
@@ -226,7 +227,7 @@ public class AIController {
 
         //https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning#Pseudocode - alphabeta pseudocode
         if(player.equals(aiType)){ //Maximizer
-            int bestValue = Integer.MIN_VALUE;
+            int bestValue = Integer.MIN_VALUE+1;
 
             List<int[]> legalMoves = getAllLegalMoves(board, player);
             for (int i = 0; i < legalMoves.size(); i++) {
@@ -253,7 +254,7 @@ public class AIController {
             }
             return bestValue;
         } else { //Minimizer
-            int bestValue = Integer.MAX_VALUE;
+            int bestValue = Integer.MAX_VALUE-1;
 
             List<int[]> legalMoves = getAllLegalMoves(board, player);
             for (int i = 0; i < legalMoves.size(); i++) {
@@ -334,11 +335,11 @@ public class AIController {
 
         //500 point for crowned pieces
         if(aiType.equals(PieceType.BLACK)){
-            score += blackCrowned*600;
-            score -= whiteCrowned*600;
+            score += blackCrowned*500;
+            score -= whiteCrowned*500;
         } else {
-            score += whiteCrowned*600;
-            score -= blackCrowned*600;
+            score += whiteCrowned*500;
+            score -= blackCrowned*500;
         }
 
         //Position score
