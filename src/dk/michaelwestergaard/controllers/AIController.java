@@ -16,7 +16,7 @@ public class AIController {
 
     private List<Move> bestMoves;
 
-    private final int MAX_SEARCH_DEPTH = 12;
+    private final int MAX_SEARCH_DEPTH = 10;
 
     private int[] lastAttackEndPosition = null;
 
@@ -34,10 +34,44 @@ public class AIController {
         alphaBeta(board, 0, aiType, Integer.MIN_VALUE, Integer.MAX_VALUE);
         Collections.shuffle(bestMoves);
 
-        int maxValue;
         int bestIndex = Integer.MIN_VALUE+1;
         boolean hasAttackMove = false;
 
+        int maxValue = Integer.MIN_VALUE;
+
+        for (int i = 0; i < bestMoves.size(); i++) {
+            Move currentMove = bestMoves.get(i);
+
+            System.out.println(currentMove);
+            if(Math.abs(currentMove.getMove()[2]) == 2) {
+                if(hasJustAttacked){
+                    if(currentMove.getMove()[0] != lastAttackEndPosition[0] && currentMove.getMove()[1] != lastAttackEndPosition[1]){
+                        continue;
+                    }
+                }
+
+                if(hasAttackMove){
+                    if(maxValue < currentMove.getScore()){
+                        maxValue = currentMove.getScore();
+                        bestIndex = i;
+                    }
+                } else {
+                    hasAttackMove = true;
+                    maxValue = currentMove.getScore();
+                    bestIndex = i;
+                }
+            } else { //Normal move
+                if(!hasAttackMove && !hasJustAttacked) {
+                    if (maxValue < currentMove.getScore()) {
+                        maxValue = currentMove.getScore();
+                        bestIndex = i;
+                    }
+                }
+            }
+
+        }
+
+        /*
         //Loop bestMoves and find the best score
         if(aiType.equals(PieceType.BLACK)){ //Maximizer
             maxValue = Integer.MIN_VALUE;
@@ -109,6 +143,7 @@ public class AIController {
             }
 
         }
+         */
         int[] endPos = new int[2];
         PieceType startType = null;
         //We found the best move
