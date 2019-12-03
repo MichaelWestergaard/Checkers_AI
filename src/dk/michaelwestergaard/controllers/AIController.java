@@ -345,8 +345,32 @@ public class AIController {
                 } else if (piece.equals(PieceType.CROWNED_WHITE)) {
                     whiteCrowned++;
 
-                    if(j == 0 || j == 7)
-                        positionValueWhite += 75;
+                    if(i != 0 && (j == 0 || j == 7))
+                        positionValueWhite += 180;
+
+                    if(3 <= i && i <= 4) {
+                        if(2 <= j && j <= 5) {
+                            positionValueWhite += 150;
+                        } else {
+                            positionValueWhite += 30;
+                        }
+                    }
+
+                    if((0 < i && i < 7) && (0 < j && j < 7)) {
+                        if((board[i + 1][j - 1].equals(PieceType.BLACK) || board[i + 1][j - 1].equals(PieceType.CROWNED_BLACK)) && board[i - 1][j + 1].equals(PieceType.EMPTY)) {
+                            positionValueWhite -= 180;
+                        }
+                        if((board[i + 1][j + 1].equals(PieceType.BLACK) || board[i + 1][j + 1].equals(PieceType.CROWNED_BLACK)) && board[i - 1][j - 1].equals(PieceType.EMPTY)) {
+                            positionValueWhite -= 180;
+                        }
+                    }
+
+                    if((0 < i && i < 7) && (0 < j && j < 7)) {
+                        if ((board[i - 1][j - 1].equals(PieceType.WHITE) || board[i - 1][j - 1].equals(PieceType.CROWNED_WHITE))
+                                && (board[i - 1][j + 1].equals(PieceType.WHITE) || board[i - 1][j + 1].equals(PieceType.CROWNED_WHITE))) {
+                            positionValueWhite += 180;
+                        }
+                    }
                 }
 
             }
