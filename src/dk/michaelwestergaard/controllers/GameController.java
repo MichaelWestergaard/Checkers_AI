@@ -102,7 +102,7 @@ public class GameController {
                 board[i][0] = PieceType.CROWNED_WHITE;
             } else if(gameRow[i].substring(2,5).equals(" B ")){
                 board[i][0] = PieceType.BLACK;
-            } else if(gameRow[i].substring(2,5).equals(" W*")){
+            } else if(gameRow[i].substring(2,5).equals(" B*")){
                 board[i][0] = PieceType.CROWNED_BLACK;
             }
             if(gameRow[i].substring(6,9).equals("   ")){
@@ -113,7 +113,7 @@ public class GameController {
                 board[i][1] = PieceType.CROWNED_WHITE;
             } else if(gameRow[i].substring(6,9).equals(" B ")){
                 board[i][1] = PieceType.BLACK;
-            } else if(gameRow[i].substring(6,9).equals(" W*")){
+            } else if(gameRow[i].substring(6,9).equals(" B*")){
                 board[i][1] = PieceType.CROWNED_BLACK;
             }
             if(gameRow[i].substring(10,13).equals("   ")){
@@ -124,7 +124,7 @@ public class GameController {
                 board[i][2] = PieceType.CROWNED_WHITE;
             } else if(gameRow[i].substring(10,13).equals(" B ")){
                 board[i][2] = PieceType.BLACK;
-            } else if(gameRow[i].substring(10,13).equals(" W*")){
+            } else if(gameRow[i].substring(10,13).equals(" B*")){
                 board[i][2] = PieceType.CROWNED_BLACK;
             }
             if(gameRow[i].substring(14,17).equals("   ")){
@@ -135,7 +135,7 @@ public class GameController {
                 board[i][3] = PieceType.CROWNED_WHITE;
             } else if(gameRow[i].substring(14,17).equals(" B ")){
                 board[i][3] = PieceType.BLACK;
-            } else if(gameRow[i].substring(14,17).equals(" W*")){
+            } else if(gameRow[i].substring(14,17).equals(" B*")){
                 board[i][3] = PieceType.CROWNED_BLACK;
             }
             if(gameRow[i].substring(18,21).equals("   ")){
@@ -146,7 +146,7 @@ public class GameController {
                 board[i][4] = PieceType.CROWNED_WHITE;
             } else if(gameRow[i].substring(18,21).equals(" B ")){
                 board[i][4] = PieceType.BLACK;
-            } else if(gameRow[i].substring(18,21).equals(" W*")){
+            } else if(gameRow[i].substring(18,21).equals(" B*")){
                 board[i][4] = PieceType.CROWNED_BLACK;
             }
             if(gameRow[i].substring(22,25).equals("   ")){
@@ -157,7 +157,7 @@ public class GameController {
                 board[i][5] = PieceType.CROWNED_WHITE;
             } else if(gameRow[i].substring(22,25).equals(" B ")){
                 board[i][5] = PieceType.BLACK;
-            } else if(gameRow[i].substring(22,25).equals(" W*")){
+            } else if(gameRow[i].substring(22,25).equals(" B*")){
                 board[i][5] = PieceType.CROWNED_BLACK;
             }
             if(gameRow[i].substring(26,29).equals("   ")){
@@ -168,7 +168,7 @@ public class GameController {
                 board[i][6] = PieceType.CROWNED_WHITE;
             } else if(gameRow[i].substring(26,29).equals(" B ")){
                 board[i][6] = PieceType.BLACK;
-            } else if(gameRow[i].substring(26,29).equals(" W*")){
+            } else if(gameRow[i].substring(26,29).equals(" B*")){
                 board[i][6] = PieceType.CROWNED_BLACK;
             }
             if(gameRow[i].substring(30,33).equals("   ")){
@@ -179,7 +179,7 @@ public class GameController {
                 board[i][7] = PieceType.CROWNED_WHITE;
             } else if(gameRow[i].substring(30,33).equals(" B ")){
                 board[i][7] = PieceType.BLACK;
-            } else if(gameRow[i].substring(30,33).equals(" W*")){
+            } else if(gameRow[i].substring(30,33).equals(" B*")){
                 board[i][7] = PieceType.CROWNED_BLACK;
             }
         }

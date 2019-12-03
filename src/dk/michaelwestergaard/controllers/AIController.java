@@ -33,7 +33,7 @@ public class AIController {
 
         alphaBeta(board, 0, aiType, Integer.MIN_VALUE, Integer.MAX_VALUE);
         System.out.println(bestMoves);
-        Collections.shuffle(bestMoves);
+        //Collections.shuffle(bestMoves);
 
         int bestIndex = Integer.MIN_VALUE+1;
         boolean hasAttackMove = false;
@@ -72,79 +72,6 @@ public class AIController {
 
         }
 
-        /*
-        //Loop bestMoves and find the best score
-        if(aiType.equals(PieceType.BLACK)){ //Maximizer
-            maxValue = Integer.MIN_VALUE;
-
-            for (int i = 0; i < bestMoves.size(); i++) {
-                Move currentMove = bestMoves.get(i);
-
-                System.out.println(currentMove);
-                if(Math.abs(currentMove.getMove()[2]) == 2) {
-                    if(hasJustAttacked){
-                        if(currentMove.getMove()[0] != lastAttackEndPosition[0] && currentMove.getMove()[1] != lastAttackEndPosition[1]){
-                            continue;
-                        }
-                    }
-
-                    if(hasAttackMove){
-                        if(maxValue < currentMove.getScore()){
-                            maxValue = currentMove.getScore();
-                            bestIndex = i;
-                        }
-                    } else {
-                        hasAttackMove = true;
-                        maxValue = currentMove.getScore();
-                        bestIndex = i;
-                    }
-                } else { //Normal move
-                    if(!hasAttackMove && !hasJustAttacked) {
-                        if (maxValue < currentMove.getScore()) {
-                            maxValue = currentMove.getScore();
-                            bestIndex = i;
-                        }
-                    }
-                }
-
-            }
-
-        } else { //Minimizer
-            maxValue = Integer.MAX_VALUE;
-
-            for (int i = 0; i < bestMoves.size(); i++) {
-                Move currentMove = bestMoves.get(i);
-
-                if(Math.abs(currentMove.getMove()[2]) == 2) {
-                    if(hasJustAttacked){
-                        if(currentMove.getMove()[0] != lastAttackEndPosition[0] && currentMove.getMove()[1] != lastAttackEndPosition[1]){
-                            continue;
-                        }
-                    }
-
-                    if(hasAttackMove){
-                        if(maxValue > currentMove.getScore()){
-                            maxValue = currentMove.getScore();
-                            bestIndex = i;
-                        }
-                    } else {
-                        hasAttackMove = true;
-                        maxValue = currentMove.getScore();
-                        bestIndex = i;
-                    }
-                } else { //Normal move
-                    if(!hasAttackMove && !hasJustAttacked) {
-                        if (maxValue > currentMove.getScore()) {
-                            maxValue = currentMove.getScore();
-                            bestIndex = i;
-                        }
-                    }
-                }
-
-            }
-
-        }
-         */
         int[] endPos = new int[2];
         PieceType startType = null;
         //We found the best move
@@ -300,7 +227,7 @@ public class AIController {
             result = x;
         }
 
-        score = result*10;
+        score = result*5;
 
         return score;
     }
@@ -318,14 +245,35 @@ public class AIController {
 
                 if (piece.equals(PieceType.BLACK)) {
                     blackNormal++;
+
+                    if(i == 7)
+                        positionValueBlack += 100;
+
+                    if(j == 0 || j == 7)
+                        positionValueBlack += 75;
+
                     positionValueBlack += stepsAwayFromCrowned(i, PieceType.BLACK);
                 } else if (piece.equals(PieceType.CROWNED_BLACK)) {
                     blackCrowned++;
+
+                    if(j == 0 || j == 7)
+                        positionValueBlack += 75;
                 } else if (piece.equals(PieceType.WHITE)) {
                     whiteNormal++;
+
+                    if(i == 0)
+                        positionValueWhite += 100;
+
+
+                    if(j == 0 || j == 7)
+                        positionValueWhite += 75;
+
                     positionValueBlack += stepsAwayFromCrowned(i, PieceType.WHITE);
                 } else if (piece.equals(PieceType.CROWNED_WHITE)) {
                     whiteCrowned++;
+
+                    if(j == 0 || j == 7)
+                        positionValueWhite += 75;
                 }
 
             }
@@ -333,11 +281,11 @@ public class AIController {
 
         //300 points for pieces that have been killed
         if(aiType.equals(PieceType.BLACK)){
-            score += Math.abs((whiteNormal+whiteCrowned)-12)*300;
-            score -= Math.abs((blackNormal+blackCrowned)-12)*300;
+            score += blackNormal*300;
+            score -= whiteNormal*300;
         } else {
-            score += Math.abs((blackNormal+blackCrowned)-12)*300;
-            score -= Math.abs((whiteNormal+whiteCrowned)-12)*300;
+            score += whiteNormal*300;
+            score -= blackNormal*300;
         }
 
         //500 point for crowned pieces
@@ -357,25 +305,6 @@ public class AIController {
             score += positionValueWhite;
             score -= positionValueBlack;
         }
-
-        //300 point for pieces that can be attacked next turn
-
-        if(aiType.equals(PieceType.BLACK)){
-            score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
-            score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
-        } else {
-            score -= boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.BLACK)*300;
-            score += boardController.amountOfPiecesThatCanBeAttacked(board, PieceType.WHITE)*300;
-        }
-
-
-        /*
-        if(aiType.equals(PieceType.BLACK)){
-            score /= whiteCrowned+whiteNormal;
-        } else {
-            score /= blackCrowned+blackNormal;
-        }
-        */
 
         return score;
     }
