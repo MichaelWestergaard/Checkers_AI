@@ -246,10 +246,10 @@ public class AIController {
                 if (piece.equals(PieceType.BLACK)) {
                     blackNormal++;
 
-                    if(i == 7)
+                    if(i == 7) // if last row
                         positionValueBlack += 100;
 
-                    if(j == 0 || j == 7)
+                    if(j == 0 || j == 7) // if sides of the board
                         positionValueBlack += 75;
 
                     positionValueBlack += stepsAwayFromCrowned(i, PieceType.BLACK);
