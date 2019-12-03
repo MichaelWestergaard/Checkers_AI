@@ -279,7 +279,7 @@ public class AIController {
             }
         }
 
-        //300 points for pieces that have been killed
+        //300 points for pieces
         if(aiType.equals(PieceType.BLACK)){
             score += blackNormal*300;
             score -= whiteNormal*300;
