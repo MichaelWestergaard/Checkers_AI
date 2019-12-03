@@ -33,7 +33,7 @@ public class AIController {
 
         alphaBeta(board, 0, aiType, Integer.MIN_VALUE, Integer.MAX_VALUE);
         System.out.println(bestMoves);
-        //Collections.shuffle(bestMoves);
+        Collections.shuffle(bestMoves);
 
         int bestIndex = Integer.MIN_VALUE+1;
         boolean hasAttackMove = false;
@@ -227,7 +227,7 @@ public class AIController {
             result = x;
         }
 
-        score = result*5;
+        score = result*10;
 
         return score;
     }
