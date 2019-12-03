@@ -16,7 +16,7 @@ public class AIController {
 
     private List<Move> bestMoves;
 
-    private final int MAX_SEARCH_DEPTH = 10;
+    private final int MAX_SEARCH_DEPTH = 12;
 
     private int[] lastAttackEndPosition = null;
 
@@ -247,28 +247,101 @@ public class AIController {
                     blackNormal++;
 
                     if(i == 7) // if last row
-                        positionValueBlack += 100;
+                        positionValueBlack += 420;
 
-                    if(j == 0 || j == 7) // if sides of the board
-                        positionValueBlack += 75;
+                    if(i != 7 && (j == 0 || j == 7)) // if sides of the board
+                        positionValueBlack += 180;
+
+                    if(3 <= i && i <= 4) {
+                        if(2 <= j && j <= 5) {
+                            positionValueBlack += 150;
+                        } else {
+                            positionValueBlack += 30;
+                        }
+                    }
+
+                    if((0 < i && i < 7) && (0 < j && j < 7)) {
+                        if((board[i - 1][j - 1].equals(PieceType.WHITE) || board[i - 1][j - 1].equals(PieceType.CROWNED_WHITE)) && board[i + 1][j + 1].equals(PieceType.EMPTY)) {
+                            positionValueBlack -= 180;
+                        }
+                        if((board[i - 1][j + 1].equals(PieceType.WHITE) || board[i - 1][j + 1].equals(PieceType.CROWNED_WHITE)) && board[i + 1][j - 1].equals(PieceType.EMPTY)) {
+                            positionValueBlack -= 180;
+                        }
+                    }
+
+                    if((0 < i && i < 7) && (0 < j && j < 7)) {
+                        if ((board[i + 1][j - 1].equals(PieceType.BLACK) || board[i + 1][j - 1].equals(PieceType.CROWNED_BLACK))
+                                && (board[i + 1][j + 1].equals(PieceType.BLACK) || board[i + 1][j + 1].equals(PieceType.CROWNED_BLACK))) {
+                            positionValueBlack += 180;
+                        }
+                    }
 
                     positionValueBlack += stepsAwayFromCrowned(i, PieceType.BLACK);
                 } else if (piece.equals(PieceType.CROWNED_BLACK)) {
                     blackCrowned++;
 
-                    if(j == 0 || j == 7)
-                        positionValueBlack += 75;
+                    if(i != 7 && (j == 0 || j == 7))
+                        positionValueBlack += 180;
+
+                    if(3 <= i && i <= 4) {
+                        if(2 <= j && j <= 5) {
+                            positionValueBlack += 150;
+                        } else {
+                            positionValueBlack += 30;
+                        }
+                    }
+
+                    if((0 < i && i < 7) && (0 < j && j < 7)) {
+                        if((board[i - 1][j - 1].equals(PieceType.WHITE) || board[i - 1][j - 1].equals(PieceType.CROWNED_WHITE)) && board[i + 1][j + 1].equals(PieceType.EMPTY)) {
+                            positionValueBlack -= 180;
+                        }
+                        if((board[i - 1][j + 1].equals(PieceType.WHITE) || board[i - 1][j + 1].equals(PieceType.CROWNED_WHITE)) && board[i + 1][j - 1].equals(PieceType.EMPTY)) {
+                            positionValueBlack -= 180;
+                        }
+                    }
+
+                    if((0 < i && i < 7) && (0 < j && j < 7)) {
+                        if ((board[i + 1][j - 1].equals(PieceType.BLACK) || board[i + 1][j - 1].equals(PieceType.CROWNED_BLACK))
+                                && (board[i + 1][j + 1].equals(PieceType.BLACK) || board[i + 1][j + 1].equals(PieceType.CROWNED_BLACK))) {
+                            positionValueBlack += 180;
+                        }
+                    }
+
                 } else if (piece.equals(PieceType.WHITE)) {
                     whiteNormal++;
 
                     if(i == 0)
-                        positionValueWhite += 100;
+                        positionValueWhite += 420;
 
 
-                    if(j == 0 || j == 7)
-                        positionValueWhite += 75;
+                    if(i != 0 && (j == 0 || j == 7))
+                        positionValueWhite += 180;
 
-                    positionValueBlack += stepsAwayFromCrowned(i, PieceType.WHITE);
+                    if(3 <= i && i <= 4) {
+                        if(2 <= j && j <= 5) {
+                            positionValueWhite += 150;
+                        } else {
+                            positionValueWhite += 30;
+                        }
+                    }
+
+                    if((0 < i && i < 7) && (0 < j && j < 7)) {
+                        if((board[i + 1][j - 1].equals(PieceType.BLACK) || board[i + 1][j - 1].equals(PieceType.CROWNED_BLACK)) && board[i - 1][j + 1].equals(PieceType.EMPTY)) {
+                            positionValueWhite -= 180;
+                        }
+                        if((board[i + 1][j + 1].equals(PieceType.BLACK) || board[i + 1][j + 1].equals(PieceType.CROWNED_BLACK)) && board[i - 1][j - 1].equals(PieceType.EMPTY)) {
+                            positionValueWhite -= 180;
+                        }
+                    }
+
+                    if((0 < i && i < 7) && (0 < j && j < 7)) {
+                        if ((board[i - 1][j - 1].equals(PieceType.WHITE) || board[i - 1][j - 1].equals(PieceType.CROWNED_WHITE))
+                                && (board[i - 1][j + 1].equals(PieceType.WHITE) || board[i - 1][j + 1].equals(PieceType.CROWNED_WHITE))) {
+                            positionValueWhite += 180;
+                        }
+                    }
+
+                    positionValueWhite += stepsAwayFromCrowned(i, PieceType.WHITE);
                 } else if (piece.equals(PieceType.CROWNED_WHITE)) {
                     whiteCrowned++;
 
@@ -290,11 +363,11 @@ public class AIController {
 
         //500 point for crowned pieces
         if(aiType.equals(PieceType.BLACK)){
-            score += blackCrowned*500;
-            score -= whiteCrowned*500;
+            score += blackCrowned*465;
+            score -= whiteCrowned*465;
         } else {
-            score += whiteCrowned*500;
-            score -= blackCrowned*500;
+            score += whiteCrowned*465;
+            score -= blackCrowned*465;
         }
 
         //Position score
